@@ -46,7 +46,7 @@ function Shipment() {
       <DashboardNavbar />
       <MDBox>
         <Grid container spacing={6}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <Card sx={{ maxWidth: 400, padding: "20px" }}>
               <CardHeader
                 title="Search Rates"
@@ -167,10 +167,10 @@ function Shipment() {
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Grid container spacing={2}>
               {/* Left Side: Economy Option */}
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <Card
                   sx={{
                     display: "flex",
@@ -209,7 +209,7 @@ function Shipment() {
               </Grid>
 
               {/* Right Side: Provider Information */}
-              <Grid item xs={8}>
+              <Grid item xs={12} md={8}>
                 <Card>
                   <CardContent
                     sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}

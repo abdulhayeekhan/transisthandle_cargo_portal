@@ -37,7 +37,7 @@ const Basic = () => {
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox pt={4} pb={3} px={3}>
-          <div style={{ width: "100%", alignContent: "center", alignSelf: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <img
               src={brandDark}
               style={{
@@ -45,7 +45,7 @@ const Basic = () => {
                 alignSelf: "center",
                 width: 120,
                 marginTop: 10,
-                marginBottom: 15,
+                marginBottom: 30,
               }}
             />
           </div>
