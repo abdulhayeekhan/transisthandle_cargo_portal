@@ -37,7 +37,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 
 // Images
 import brandWhite from "assets/images/logowhite.png";
-import brandDark from "assets/images/logo-ct-dark.png";
+import brandDark from "assets/images/logo-cargo.png";
 import AddShipment from "layouts/shipment/add";
 import SignIn from "layouts/authentication/sign-in";
 
@@ -181,7 +181,7 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
         <Route path="/add-shipment" element={<AddShipment />} />
-        <Route path="/authentication/sign-in" element={<SignIn />} />
+        <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />
       </Routes>
     </ThemeProvider>
   );

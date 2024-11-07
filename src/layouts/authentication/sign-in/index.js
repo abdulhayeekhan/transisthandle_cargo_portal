@@ -25,8 +25,8 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-
-function Basic() {
+import brandDark from "assets/images/logo-cargo.png";
+const Basic = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
@@ -37,6 +37,19 @@ function Basic() {
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox pt={4} pb={3} px={3}>
+          <div style={{ width: "100%", alignContent: "center", alignSelf: "center" }}>
+            <img
+              src={brandDark}
+              style={{
+                alignItems: "center",
+                alignSelf: "center",
+                width: 120,
+                marginTop: 10,
+                marginBottom: 15,
+              }}
+            />
+          </div>
+
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDInput type="email" label="Email" fullWidth />
@@ -66,6 +79,6 @@ function Basic() {
       </Card>
     </BasicLayout>
   );
-}
+};
 
 export default Basic;

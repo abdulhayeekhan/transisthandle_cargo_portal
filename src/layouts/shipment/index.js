@@ -27,12 +27,12 @@ function Shipment() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container>
-              <Grid item xs={10}>
+              <Grid item xs={12} md={10}>
                 <Typography>
                   You can view, print your shipments label here. (Timezone: America/New York)
                 </Typography>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={12} md={2}>
                 <Button
                   variant="contained"
                   style={{ color: "#fff" }}
@@ -48,7 +48,7 @@ function Shipment() {
               <CardContent>
                 <form>
                   <Grid container spacing={6}>
-                    <Grid item xs={4}>
+                    <Grid item xs={6} md={4}>
                       <TextField
                         label="Search by Date"
                         variant="outlined"
@@ -56,7 +56,7 @@ function Shipment() {
                         margin="normal"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={2}>
                       <TextField
                         label="Search Tracking No"
                         variant="outlined"
@@ -64,7 +64,7 @@ function Shipment() {
                         margin="normal"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={2}>
                       <TextField
                         label="Search Invoice No"
                         variant="outlined"
@@ -72,7 +72,7 @@ function Shipment() {
                         margin="normal"
                       />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={6} md={2}>
                       <TextField
                         label="Search by Company"
                         variant="outlined"
