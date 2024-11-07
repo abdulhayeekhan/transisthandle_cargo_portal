@@ -10,6 +10,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import { Icon } from "@iconify/react";
 
 // Data
 import shipmentTableData from "layouts/shipment/data/shipmenttable";
@@ -38,6 +39,7 @@ function Shipment() {
                   style={{ color: "#fff" }}
                   onClick={(e) => navigate("/add-shipment")}
                 >
+                  <Icon icon={"fluent:add-12-filled"}></Icon>
                   ADD NEW SHIPMENT
                 </Button>
               </Grid>

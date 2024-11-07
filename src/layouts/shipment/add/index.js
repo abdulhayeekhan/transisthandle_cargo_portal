@@ -37,7 +37,7 @@ import { useNavigate } from "react-router-dom";
 
 function Shipment() {
   const navigate = useNavigate();
-  const [country, setCountry] = useState("");
+  const [country, setCountry] = useState(null);
   const { columns, rows } = shipmentTableData();
   const [measurementUnit, setMeasurementUnit] = useState("poundsOunces");
   const [dimensionUnit, setDimensionUnit] = useState("inches");
@@ -63,7 +63,7 @@ function Shipment() {
                   </Select> */}
                   <TextField
                     select
-                    label="Country"
+                    label="From Country"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     fullWidth
@@ -72,7 +72,9 @@ function Shipment() {
                       native: true,
                     }}
                   >
-                    <option value={""}>-select Country--</option>
+                    <option value={null}>
+                      United Kingdom of Great Britain and Northern Ireland
+                    </option>
                     <option value="UK">United Kingdom of Great Britain and Northern Ireland</option>
                     {/* Add more options here */}
                   </TextField>
