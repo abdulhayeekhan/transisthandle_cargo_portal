@@ -40,7 +40,8 @@ import brandWhite from "assets/images/logowhite.png";
 import brandDark from "assets/images/logo-cargo.png";
 import AddShipment from "layouts/shipment/add";
 import SignIn from "layouts/authentication/sign-in";
-
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -172,8 +173,11 @@ export default function App() {
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
-          <Configurator />
-          {configsButton}
+          <DashboardLayout>
+            <DashboardNavbar />
+            <Configurator />
+            {configsButton}
+          </DashboardLayout>
         </>
       )}
       {layout === "vr" && <Configurator />}

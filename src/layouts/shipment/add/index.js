@@ -43,7 +43,7 @@ function Shipment() {
   const [dimensionUnit, setDimensionUnit] = useState("inches");
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      {/* <DashboardNavbar /> */}
       <MDBox>
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
