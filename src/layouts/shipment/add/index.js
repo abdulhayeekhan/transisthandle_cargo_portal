@@ -11,6 +11,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { ArrowDownward } from "@mui/icons-material";
+import { Icon } from "@iconify/react";
 // Data
 import shipmentTableData from "layouts/shipment/data/shipmenttable";
 import {
@@ -154,6 +155,7 @@ function Shipment() {
                 </FormControl> */}
                 <Box display="flex" gap={2} mb={2}>
                   <Button variant="contained" style={{ color: "#fff" }} fullWidth>
+                    <Icon icon={"material-symbols:search"}></Icon>
                     Search
                   </Button>
 
@@ -163,6 +165,7 @@ function Shipment() {
                     onClick={(e) => navigate("/shipment")}
                     style={{ color: "grey" }}
                   >
+                    <Icon icon={"material-symbols:close"}></Icon>
                     Cancel
                   </Button>
                 </Box>
