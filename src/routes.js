@@ -9,6 +9,7 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Shipment from "layouts/shipment";
 import AddShipment from "layouts/shipment/add";
+import Company from "layouts/company";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -29,6 +30,14 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/shipment",
     component: <Shipment />,
+  },
+  {
+    type: "collapse",
+    name: "Company",
+    key: "company",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/company",
+    component: <Company />,
   },
   {
     type: "collapse",
