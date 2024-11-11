@@ -21,7 +21,8 @@ const routes = [
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
-    component: <Dashboard />,
+    component: Dashboard,
+    private: true,
   },
   {
     type: "collapse",
@@ -29,7 +30,8 @@ const routes = [
     key: "shipment",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/shipment",
-    component: <Shipment />,
+    component: Shipment,
+    private: true,
   },
   {
     type: "collapse",
@@ -37,7 +39,8 @@ const routes = [
     key: "company",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/company",
-    component: <Company />,
+    component: Company,
+    private: true,
   },
   {
     type: "collapse",
@@ -45,7 +48,8 @@ const routes = [
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
-    component: <Billing />,
+    component: Billing,
+    private: true,
   },
 ];
 

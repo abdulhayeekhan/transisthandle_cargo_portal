@@ -35,7 +35,7 @@ function Company() {
                 <Button
                   variant="contained"
                   style={{ color: "#fff" }}
-                  onClick={(e) => navigate("/add-shipment")}
+                  onClick={(e) => navigate("/add-company")}
                 >
                   <Icon icon={"fluent:add-12-filled"}></Icon>
                   ADD Company

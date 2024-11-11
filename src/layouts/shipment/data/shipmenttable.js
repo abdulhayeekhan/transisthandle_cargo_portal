@@ -174,7 +174,7 @@ export default function data() {
     invoiceNo: (
       <Typography
         onClick={(e) => handleDownloadInvoice(user.invoiceNo)}
-        style={{ fontSize: 14, fontWeight: "500", color: "#cf640b" }}
+        style={{ fontSize: 14, fontWeight: "500", color: "#cf640b", cursor: "pointer" }}
       >
         {user.invoiceNo}
       </Typography>

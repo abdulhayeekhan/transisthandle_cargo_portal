@@ -11,271 +11,133 @@ import MDBadge from "components/MDBadge";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
-import { Typography } from "@mui/material";
+import { Button, Typography, Icon } from "@mui/material";
 
 const userData = [
   {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A0",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
+    id: 1,
+    companyName: "Ahmad Traders",
+    contactNo: "0321456987",
+    email: "user@gmail.com",
+    address: "144-A Pakistan House",
+    labelCount: 3000,
+    maxUser: 2,
+    existUser: 1,
+    isActive: true,
     createdAt: "04/11/2024 15:49",
-    refund: "",
   },
   {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A1",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
+    id: 2,
+    companyName: "Alam Traders",
+    contactNo: "0321456987",
+    email: "user@gmail.com",
+    address: "144-A Pakistan House",
+    labelCount: 3000,
+    maxUser: 2,
+    existUser: 1,
+    isActive: false,
     createdAt: "04/11/2024 15:49",
-    refund: "",
   },
   {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A2",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
+    id: 3,
+    companyName: "Shamas Traders",
+    contactNo: "0321456987",
+    email: "user@gmail.com",
+    address: "144-A Pakistan House",
+    labelCount: 3000,
+    maxUser: 2,
+    existUser: 1,
+    isActive: false,
     createdAt: "04/11/2024 15:49",
-    refund: "",
   },
   {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A3",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
+    id: 4,
+    companyName: "Akbar Traders",
+    contactNo: "0321456987",
+    email: "user@gmail.com",
+    address: "144-A Pakistan House",
+    labelCount: 3000,
+    maxUser: 2,
+    existUser: 1,
+    isActive: true,
     createdAt: "04/11/2024 15:49",
-    refund: "",
-  },
-  {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A5",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
-    createdAt: "04/11/2024 15:49",
-    refund: "",
-  },
-  {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A4",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
-    createdAt: "04/11/2024 15:49",
-    refund: "",
-  },
-  {
-    company: "ESCM GmbH",
-    tracking: "1ZH9R5340406161725",
-    invoiceNo: "ESCEFAF54F8A8",
-    carrierCode: "UPS International",
-    sender: "ESCM GMBH",
-    weight: 45.5,
-    length: 45,
-    width: 45,
-    height: 12,
-    currency: "USD",
-    total: 1000,
-    recipient: "NICK BERNARDO",
-    shipFrom: "ESCM GmbH",
-    shipTo: "1 NORTHWAY LANE LATHAM NY 12110 5185779255",
-    custRef: "",
-    shipDate: "04/11/2024 15:49",
-    createdAt: "04/11/2024 15:49",
-    refund: "",
   },
 ];
 
 export default function data() {
-  const handleDownloadInvoice = (id) => {
-    console.log("invoice:", id);
-  };
   const rows = userData.map((user) => ({
-    company: (
+    companyName: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.company}
+        {user.companyName}
       </MDTypography>
     ),
-    tracking: (
+    contactNo: (
       <MDTypography component="a" variant="caption" color={"#cf640b"} fontWeight="medium">
-        {user.tracking}
+        {user.contactNo}
       </MDTypography>
     ),
-    invoiceNo: (
-      <Typography
-        onClick={(e) => handleDownloadInvoice(user.invoiceNo)}
-        style={{ fontSize: 14, fontWeight: "500", color: "#cf640b" }}
-      >
-        {user.invoiceNo}
-      </Typography>
-    ),
-    carrierCode: (
+    email: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.carrierCode}
+        {user.email}
       </MDTypography>
     ),
-    sender: (
+    address: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.sender}
+        {user.address}
       </MDTypography>
     ),
-    weight: (
+    labelCount: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.weight}
+        {user.labelCount}
       </MDTypography>
     ),
-    length: (
+    maxUser: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.length}
+        {user.maxUser}
+        <Button onClick={e => }>
+          <Icon fontSize="small">add</Icon>
+        </Button>
       </MDTypography>
     ),
-    width: (
+    existUser: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.width}
+        {user.existUser}
       </MDTypography>
     ),
-    height: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.height}
-      </MDTypography>
-    ),
-    currency: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.currency}
-      </MDTypography>
-    ),
-    total: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.total}
-      </MDTypography>
-    ),
-    recipient: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.recipient}
-      </MDTypography>
-    ),
-    shipFrom: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.shipFrom}
-      </MDTypography>
-    ),
-    shipTo: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.shipTo}
-      </MDTypography>
-    ),
-    custRef: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.custRef}
-      </MDTypography>
-    ),
-    shipDate: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.shipDate}
-      </MDTypography>
+    status: (
+      <MDBox ml={-1}>
+        <MDBadge
+          badgeContent={user.isActive ? "Active" : "In-Active"}
+          color={user.isActive ? "success" : "danger"}
+          variant="gradient"
+          size="sm"
+        />
+      </MDBox>
     ),
     createdAt: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {user.createdAt}
       </MDTypography>
     ),
-    refund: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {user.refund}
-      </MDTypography>
+    action: (
+      <Button component="a" variant="caption" color="text" fontWeight="medium">
+        <Icon fontSize="small">edit</Icon>
+      </Button>
     ),
   }));
 
   return {
     columns: [
-      { Header: "company", accessor: "company", width: "10%", align: "left" },
-      { Header: "tracking", accessor: "tracking", align: "left" },
-      { Header: "invoice#", accessor: "invoiceNo", align: "center" },
-      { Header: "carrierCode", accessor: "carrierCode", align: "center" },
-      { Header: "sender", accessor: "sender", align: "center" },
-      { Header: "weight", accessor: "weight", align: "left" },
-      { Header: "length", accessor: "length", align: "left" },
-      { Header: "width", accessor: "width", align: "center" },
-      { Header: "height", accessor: "height", align: "center" },
-      { Header: "currency", accessor: "currency", align: "center" },
-      { Header: "total", accessor: "total", align: "left" },
-      { Header: "recipient", accessor: "recipient", align: "left" },
-      { Header: "ship-From", accessor: "shipFrom", align: "center" },
-      { Header: "ship-To", accessor: "shipTo", align: "center" },
-      { Header: "custRef", accessor: "custRef", align: "center" },
-      { Header: "shipDate", accessor: "shipDate", align: "left" },
-      { Header: "createdAt", accessor: "createdAt", align: "left" },
-      { Header: "refund", accessor: "refund", align: "center" },
+      { Header: "companyName", accessor: "companyName", width: "10%", align: "left" },
+      { Header: "contactNo", accessor: "contactNo", align: "left" },
+      { Header: "email", accessor: "email", align: "center" },
+      { Header: "address", accessor: "address", align: "center" },
+      { Header: "labelCount", accessor: "labelCount", align: "center" },
+      { Header: "maxUser", accessor: "maxUser", align: "left" },
+      { Header: "existUser", accessor: "existUser", align: "left" },
+      { Header: "status", accessor: "status", align: "left" },
+      { Header: "createdAt", accessor: "createdAt", align: "center" },
+      { Header: "action", accessor: "action", align: "center" },
     ],
     rows,
   };

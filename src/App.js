@@ -31,7 +31,8 @@ import createCache from "@emotion/cache";
 // Material Dashboard 2 React routes
 import routes from "routes";
 import AppBar from "assets/theme/components/appBar";
-
+import { AuthProvider } from "context/AuthContext";
+import PrivateRoute from "components/PrivateRoute";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
@@ -42,6 +43,7 @@ import AddShipment from "layouts/shipment/add";
 import SignIn from "layouts/authentication/sign-in";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import AddCompany from "layouts/company/add";
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -104,8 +106,29 @@ export default function App() {
         return getRoutes(route.collapse);
       }
 
+      // if (route.private) {
+      //   return (
+      //     <Route
+      //       exact
+      //       path={route.route}
+      //       element={<PrivateRoute element={route.component} />}
+      //       key={route.key}
+      //     />
+      //   );
+      // }
+
       if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+        // Check if route requires authentication
+        if (route.private) {
+          return (
+            <Route
+              path={route.route}
+              element={<PrivateRoute element={route.component} />}
+              key={route.key}
+            />
+          );
+        }
+        return <Route path={route.route} element={route.component} key={route.key} />;
       }
 
       return null;
@@ -135,58 +158,36 @@ export default function App() {
     </MDBox>
   );
 
-  return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
+  return (
+    <AuthProvider>
+      <ThemeProvider theme={darkMode ? themeDark : theme}>
         <CssBaseline />
         {layout === "dashboard" && (
           <>
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Material Dashboard 2"
+              brandName="Transist Handle Cargo"
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
-            <Configurator />
-            {configsButton}
+            <DashboardLayout>
+              <DashboardNavbar />
+              <Configurator />
+              {configsButton}
+            </DashboardLayout>
           </>
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
           <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="/add-shipment" element={<PrivateRoute element={AddShipment} />} />
+          <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />
+          <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />
         </Routes>
       </ThemeProvider>
-    </CacheProvider>
-  ) : (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Transist Handle Cargo"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <DashboardLayout>
-            <DashboardNavbar />
-            <Configurator />
-            {configsButton}
-          </DashboardLayout>
-        </>
-      )}
-      {layout === "vr" && <Configurator />}
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
-        <Route path="/add-shipment" element={<AddShipment />} />
-        <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />
-      </Routes>
-    </ThemeProvider>
+    </AuthProvider>
   );
 }
