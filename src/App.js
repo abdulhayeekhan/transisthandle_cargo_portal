@@ -44,6 +44,9 @@ import SignIn from "layouts/authentication/sign-in";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import AddCompany from "layouts/company/add";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -161,6 +164,7 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider theme={darkMode ? themeDark : theme}>
+        <ToastContainer />
         <CssBaseline />
         {layout === "dashboard" && (
           <>

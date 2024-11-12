@@ -12,6 +12,7 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { ArrowDownward } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
+
 // Data
 import shipmentTableData from "layouts/shipment/data/shipmenttable";
 import {
@@ -41,31 +42,17 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AddNewCompany } from "store/company";
 
-const levelwisedata = [
-  {
-    id: 1,
-    name: "Pakistan",
-  },
-  {
-    id: 2,
-    name: "India",
-  },
-];
 function AddCompany() {
   const navigate = useNavigate();
-  const [checked, setChecked] = useState(true);
-  const [country, setCountry] = useState(null);
+  const dispatch = useDispatch();
+
   const { register, control, handleSubmit, errors } = useForm();
-  const { columns, rows } = shipmentTableData();
-  const [measurementUnit, setMeasurementUnit] = useState("poundsOunces");
-  const [dimensionUnit, setDimensionUnit] = useState("inches");
-  const [shipInfo, setShipInfo] = useState({
-    weightKG: 0.0,
-    weightGM: 0.0,
-  });
 
   const [companyInfo, setCompanyInfo] = useState({
+    createdBy: 3,
     maxUser: 1,
     isActive: true,
   });
@@ -81,12 +68,16 @@ function AddCompany() {
     setCompanyInfo({ ...companyInfo, isActive: value });
   };
 
-
   const [formData, setFormData] = useState({
     field1: "",
     field2: "",
     field3: "",
   });
+  const handleSaveCompany = () => {
+    const body = companyInfo;
+    dispatch(AddNewCompany(body));
+    navigate("/company");
+  };
   const handleChange = () => {};
   const [open, setOpen] = useState(false);
 
@@ -195,7 +186,7 @@ function AddCompany() {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
-            <Button variant="contained" style={{ color: "#fff" }}>
+            <Button variant="contained" style={{ color: "#fff" }} onClick={handleSaveCompany}>
               <Icon fontSize="large">save</Icon>
               Save
             </Button>

@@ -13,12 +13,20 @@ import DataTable from "examples/Tables/DataTable";
 import { Icon } from "@iconify/react";
 
 // Data
-import shipmentTableData from "layouts/company/data";
-import { Button, Typography, TextField, Card, CardHeader, CardContent } from "@mui/material";
+import ShipmentTableData from "layouts/company/data";
+import {
+  Button,
+  Typography,
+  TextField,
+  Card,
+  CardHeader,
+  CardContent,
+  paginationClasses,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function Company() {
-  const { columns, rows } = shipmentTableData();
+  // const { columns, rows } = shipmentTableData();
   const navigate = useNavigate();
 
   return (
@@ -46,28 +54,8 @@ function Company() {
           <Grid item xs={12}>
             <Card>
               <CardContent>
-                <form>
-                  <Grid container spacing={6}>
-                    <Grid item xs={6} md={4}>
-                      <TextField
-                        label="Search by Company Name"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                  </Grid>
-                </form>
+                <ShipmentTableData />
               </CardContent>
-              <MDBox>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
             </Card>
           </Grid>
         </Grid>
