@@ -17,16 +17,6 @@ import MDBox from "components/MDBox";
 import axios from "axios";
 const baseURL = process.env.REACT_APP_API_URL;
 
-const levelwisedata = [
-  {
-    id: 1,
-    name: "Pakistan",
-  },
-  {
-    id: 2,
-    name: "India",
-  },
-];
 function ShippingForm() {
   const [stateValue, setStateValue] = useState(null);
   const [countryValue, setCountryValue] = useState(null);
@@ -34,6 +24,10 @@ function ShippingForm() {
   const [countryId, setCountryId] = useState("");
   const [countryList, setCountryList] = useState([]);
   const [stateList, setStateList] = useState([]);
+
+  const [shipCountryCode, setShipCountryCode] = useState("");
+  const [shipStateCode, setShipStateCode] = useState("");
+  console.log("shipCountryCode:", shipCountryCode);
 
   const [shipmentInfo, setShipmentInfo] = useState({
     ShipmentRequest: {
@@ -65,19 +59,19 @@ function ShippingForm() {
           },
         },
         ShipTo: {
-          Name: "Happy Dog Pet Supply",
-          AttentionName: "1160b_74",
+          Name: "",
+          AttentionName: "",
           Phone: {
-            Number: "9225377171",
+            Number: "",
           },
           Address: {
-            AddressLine: "123 Main St",
-            City: "timonium",
-            StateProvinceCode: "MD",
-            PostalCode: "21030",
-            CountryCode: "US",
+            AddressLine: "",
+            City: "",
+            StateProvinceCode: shipStateCode,
+            PostalCode: "",
+            CountryCode: shipCountryCode,
           },
-          Residential: " ",
+          Residential: "",
         },
         ShipFrom: {
           Name: "T and T Designs",
@@ -140,8 +134,6 @@ function ShippingForm() {
     },
   });
 
-  console.log("shipmentInfo:", shipmentInfo);
-
   const handleInputChange = (path, value) => {
     setShipmentInfo((prevInfo) => {
       // Copy previous state
@@ -164,29 +156,28 @@ function ShippingForm() {
     });
   };
 
-  console.log("stateList:", stateList);
-  console.log("countryId:", countryId);
-
   const GetCountryies = async () => {
     const { data } = await axios.get(`${baseURL}/country/getUPS`);
     setCountryList(data);
   };
 
-  const GetStateData = async () => {
-    const { data } = await axios.get(`${baseURL}/state/getByCountry/${countryId}`);
-    setStateList(data);
-  };
+  // const GetStateData = async () => {
+  //   const { data } = await axios.get(`${baseURL}/state/getByCountry/${countryId}`);
+  //   setStateList(data);
+  // };
 
   useEffect(() => {
     GetCountryies();
-  }, [countryId]);
-  const handleAutoCompleteAccountID = () => {};
+  }, [countryId, shipStateCode, shipCountryCode]);
+
   const handleCountryChange = async (event, newValue) => {
     if (newValue !== null) {
       setCountryValue(newValue);
       setCountryId(newValue.id);
+      setShipCountryCode(newValue.alpha2);
       const { data } = await axios.get(`${baseURL}/state/getByCountry/${newValue.id}`);
       setStateList(data);
+      setStateValue(null);
     } else {
       console.log("No value country");
       setCountryValue(null);
@@ -196,10 +187,12 @@ function ShippingForm() {
     if (newValue !== null) {
       console.log("state code:", newValue.code);
       setStateValue(newValue);
+      setShipStateCode(newValue?.code);
     } else {
       setStateValue(null);
     }
   };
+  console.log("shipmentInfo:", shipmentInfo);
 
   return (
     <DashboardLayout>
@@ -275,22 +268,44 @@ function ShippingForm() {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="City" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Postal code" fullWidth />
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Address Line 1 *"
-                size="medium"
-                defaultValue="ESCM GmbH"
+                label="City"
+                fullWidth
+                onChange={(e) =>
+                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Address.City", e.target.value)
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Postal code"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.ShipTo.Address.PostalCode",
+                    e.target.value
+                  )
+                }
                 fullWidth
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField label="Address Line 2" defaultValue="ESCM GmbH" fullWidth />
+              <TextField
+                label="Address Line 1 *"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.ShipTo.Address.AddressLine",
+                    e.target.value
+                  )
+                }
+                size="medium"
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField label="Address Line 2" fullWidth />
             </Grid>
 
             {/* Country Selector */}

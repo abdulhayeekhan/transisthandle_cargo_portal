@@ -20,7 +20,7 @@ import MDInput from "components/MDInput";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
-
+import { useAuth } from "context/AuthContext";
 // Custom styles for DashboardNavbar
 import {
   navbar,
@@ -39,6 +39,7 @@ import {
 } from "context";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const { logout } = useAuth();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -90,11 +91,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem
-        onClick={(e) => navigate("/authentication/sign-in")}
-        icon={<Icon>logout</Icon>}
-        title="Logout"
-      />
+      <NotificationItem onClick={(e) => logout()} icon={<Icon>logout</Icon>} title="Logout" />
     </Menu>
   );
 

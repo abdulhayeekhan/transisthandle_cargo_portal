@@ -32,16 +32,6 @@ const routes = [
     route: "/shipment",
     component: Shipment,
     private: true,
-    children: [
-      {
-        name: "Shipment Rate",
-        key: "shipment-rate",
-        route: "/get-shipment-rate",
-        icon: <Icon fontSize="small">table_view</Icon>,
-        component: ShipmentRate,
-        private: true,
-      },
-    ],
   },
   {
     type: "collapse",
