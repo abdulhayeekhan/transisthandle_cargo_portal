@@ -10,7 +10,7 @@ import SignUp from "layouts/authentication/sign-up";
 import Shipment from "layouts/shipment";
 import AddShipment from "layouts/shipment/add";
 import Company from "layouts/company";
-
+import ShipmentRate from "layouts/shipment/rate";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -32,6 +32,16 @@ const routes = [
     route: "/shipment",
     component: Shipment,
     private: true,
+    children: [
+      {
+        name: "Shipment Rate",
+        key: "shipment-rate",
+        route: "/get-shipment-rate",
+        icon: <Icon fontSize="small">table_view</Icon>,
+        component: ShipmentRate,
+        private: true,
+      },
+    ],
   },
   {
     type: "collapse",

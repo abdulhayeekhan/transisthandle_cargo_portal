@@ -44,6 +44,7 @@ import SignIn from "layouts/authentication/sign-in";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import AddCompany from "layouts/company/add";
+import ShipmentRate from "layouts/shipment/rate";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -189,6 +190,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/add-shipment" element={<PrivateRoute element={AddShipment} />} />
           <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />
+          <Route path="/get-shipment-rate" element={<PrivateRoute element={ShipmentRate} />} />
           <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />
         </Routes>
       </ThemeProvider>
