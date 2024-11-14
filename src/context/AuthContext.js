@@ -26,7 +26,19 @@ export const AuthProvider = ({ children }) => {
           navigate("/dashboard");
         })
         .catch((err) => {
-          toast.error("" + err);
+          console.log("error:", err?.response?.status);
+          const status = err?.response?.status;
+          if (status === 404) {
+            toast.error("Please enter Valid email/password");
+          } else if (status === 403) {
+            toast.error("Your account is inactive. Please contact support for assistance");
+          } else if (status === 405) {
+            toast.error("Your company account is currently blocked.");
+          } else if (status === 500) {
+            console.error("Error 500: Server error.");
+          } else {
+            console.error(`Error ${status}: ${err.response.data.message}`);
+          }
         });
     } catch (error) {
       console.error("Login failed:", error);

@@ -11,6 +11,7 @@ import Shipment from "layouts/shipment";
 import AddShipment from "layouts/shipment/add";
 import Company from "layouts/company";
 import ShipmentRate from "layouts/shipment/rate";
+import Users from "layouts/user";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -40,6 +41,15 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/company",
     component: Company,
+    private: true,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/users",
+    component: Users,
     private: true,
   },
   {
