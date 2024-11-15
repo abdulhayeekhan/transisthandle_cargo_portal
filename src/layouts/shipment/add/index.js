@@ -11,6 +11,7 @@ import {
   FormControl,
   InputLabel,
   Autocomplete,
+  Typography,
 } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
@@ -27,73 +28,70 @@ function ShippingForm() {
 
   const [shipCountryCode, setShipCountryCode] = useState("");
   const [shipStateCode, setShipStateCode] = useState("");
-  console.log("shipCountryCode:", shipCountryCode);
-
+  // console.log("shipCountryCode:", shipCountryCode);
+  // setShipmentInfo({...shipmentInfo,ShipmentRequest.Shipment.ShipTo.Address.CountryCode})
+  // ShipmentRequest.Shipment.ShipTo.Address.CountryCode.StateProvinceCode
+  // ShipmentRequest.Shipment.ShipTo.Address.CountryCode
+  // ShipmentRequest.Shipment.Package.Dimensions.Length
+  // ShipmentRequest.Shipment.Package.Dimensions.Width
+  // ShipmentRequest.Shipment.Package.PackageWeight.Weight
   const [shipmentInfo, setShipmentInfo] = useState({
     ShipmentRequest: {
       Request: {
         SubVersion: "1801",
         RequestOption: "nonvalidate",
-        TransactionReference: {
-          CustomerContext: "",
-        },
+        TransactionReference: { CustomerContext: "" },
       },
       Shipment: {
         Description: "Ship WS test",
         Shipper: {
-          Name: "ShipperName",
-          AttentionName: "ShipperZs Attn Name",
-          TaxIdentificationNumber: "123456",
+          Name: "Escm GmbH",
+          AttentionName: "Shahzad Choudary",
+          TaxIdentificationNumber: "DE331991534",
           Phone: {
-            Number: "1115554758",
+            Number: "015202446893",
             Extension: " ",
           },
-          ShipperNumber: 456,
+          ShipperNumber: " ",
           FaxNumber: "8002222222",
           Address: {
-            AddressLine: "2311 York Rd",
-            City: "Timonium",
-            StateProvinceCode: "MD",
-            PostalCode: "21093",
-            CountryCode: "US",
+            AddressLine: ["Butzweilerhof Allee 3"],
+            City: "Koln",
+            StateProvinceCode: "NW",
+            PostalCode: "50829",
+            CountryCode: "DE",
           },
         },
         ShipTo: {
           Name: "",
           AttentionName: "",
-          Phone: {
-            Number: "",
-          },
+          Phone: { Number: "" },
           Address: {
-            AddressLine: "",
+            AddressLine: [""],
             City: "",
-            StateProvinceCode: shipStateCode,
+            StateProvinceCode: "",
             PostalCode: "",
-            CountryCode: shipCountryCode,
+            CountryCode: "",
           },
-          Residential: "",
+          Residential: " ",
         },
         ShipFrom: {
-          Name: "T and T Designs",
-          AttentionName: "1160b_74",
-          Phone: {
-            Number: "1234567890",
-          },
-          FaxNumber: "1234567890",
+          Name: "Escm GmbH",
+          AttentionName: "Shahzad Choudary",
+          Phone: { Number: "015202446893" },
+          FaxNumber: "",
           Address: {
-            AddressLine: "2311 York Rd",
-            City: "Alpharetta",
-            StateProvinceCode: "GA",
-            PostalCode: "30005",
-            CountryCode: "US",
+            AddressLine: ["Butzweilerhof Allee 3"],
+            City: "Koln",
+            StateProvinceCode: "NW",
+            PostalCode: "50829",
+            CountryCode: "DE",
           },
         },
         PaymentInformation: {
           ShipmentCharge: {
             Type: "01",
-            BillShipper: {
-              AccountNumber: 78546,
-            },
+            BillShipper: { AccountNumber: "A70C63" },
           },
         },
         Service: {
@@ -111,14 +109,14 @@ function ShippingForm() {
               Code: "IN",
               Description: "Inches",
             },
-            Length: "10",
-            Width: "30",
-            Height: "45",
+            Length: "",
+            Width: "",
+            Height: "",
           },
           PackageWeight: {
             UnitOfMeasurement: {
-              Code: "LBS",
-              Description: "Pounds",
+              Code: "KG",
+              Description: "Kilograms",
             },
             Weight: "5",
           },
@@ -175,21 +173,84 @@ function ShippingForm() {
       setCountryValue(newValue);
       setCountryId(newValue.id);
       setShipCountryCode(newValue.alpha2);
+      setShipmentInfo((prevState) => ({
+        ...prevState,
+        ShipmentRequest: {
+          ...prevState.ShipmentRequest,
+          Shipment: {
+            ...prevState.ShipmentRequest.Shipment,
+            ShipTo: {
+              ...prevState.ShipmentRequest.Shipment.ShipTo,
+              Address: {
+                ...prevState.ShipmentRequest.Shipment.ShipTo.Address,
+                CountryCode: newValue.alpha2, // Replace with your desired value
+              },
+            },
+          },
+        },
+      }));
       const { data } = await axios.get(`${baseURL}/state/getByCountry/${newValue.id}`);
       setStateList(data);
       setStateValue(null);
     } else {
-      console.log("No value country");
       setCountryValue(null);
+      setShipmentInfo((prevState) => ({
+        ...prevState,
+        ShipmentRequest: {
+          ...prevState.ShipmentRequest,
+          Shipment: {
+            ...prevState.ShipmentRequest.Shipment,
+            ShipTo: {
+              ...prevState.ShipmentRequest.Shipment.ShipTo,
+              Address: {
+                ...prevState.ShipmentRequest.Shipment.ShipTo.Address,
+                CountryCode: "",
+                StateProvinceCode: "", // Replace with your desired value
+              },
+            },
+          },
+        },
+      }));
     }
   };
   const handleStateChange = (event, newValue) => {
     if (newValue !== null) {
-      console.log("state code:", newValue.code);
       setStateValue(newValue);
       setShipStateCode(newValue?.code);
+      setShipmentInfo((prevState) => ({
+        ...prevState,
+        ShipmentRequest: {
+          ...prevState.ShipmentRequest,
+          Shipment: {
+            ...prevState.ShipmentRequest.Shipment,
+            ShipTo: {
+              ...prevState.ShipmentRequest.Shipment.ShipTo,
+              Address: {
+                ...prevState.ShipmentRequest.Shipment.ShipTo.Address,
+                StateProvinceCode: newValue.code, // Replace with your desired value
+              },
+            },
+          },
+        },
+      }));
     } else {
       setStateValue(null);
+      setShipmentInfo((prevState) => ({
+        ...prevState,
+        ShipmentRequest: {
+          ...prevState.ShipmentRequest,
+          Shipment: {
+            ...prevState.ShipmentRequest.Shipment,
+            ShipTo: {
+              ...prevState.ShipmentRequest.Shipment.ShipTo,
+              Address: {
+                ...prevState.ShipmentRequest.Shipment.ShipTo.Address,
+                StateProvinceCode: "", // Replace with your desired value
+              },
+            },
+          },
+        },
+      }));
     }
   };
   console.log("shipmentInfo:", shipmentInfo);
@@ -199,7 +260,7 @@ function ShippingForm() {
       {/* <DashboardNavbar /> */}
       <MDBox
         sx={{
-          height: "75vh", // Set a fixed height for the scrollable area
+          height: "70vh", // Set a fixed height for the scrollable area
           overflowY: "auto", // Enable vertical scrolling
           padding: 2,
           marginY: 2,
@@ -208,7 +269,9 @@ function ShippingForm() {
         <form>
           <Grid container spacing={2}>
             {/* Top Section */}
-
+            <Grid item xs={12}>
+              <Typography>Ship To</Typography>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Name"
@@ -217,6 +280,7 @@ function ShippingForm() {
                 }
                 fullWidth
                 required
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -226,13 +290,14 @@ function ShippingForm() {
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.Name", e.target.value)
                 }
                 fullWidth
+                size="small"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 fullWidth
                 name="creditAccountId"
-                size="medium"
+                size="small"
                 options={countryList}
                 value={countryValue} // Bind the selected value (object with `id`, `label`, `code`)
                 onChange={handleCountryChange}
@@ -240,7 +305,7 @@ function ShippingForm() {
                 renderInput={(params) => (
                   <TextField
                     name="creditAccountId"
-                    size="medium"
+                    size="small"
                     required
                     {...params}
                     label="State"
@@ -252,7 +317,7 @@ function ShippingForm() {
               <Autocomplete
                 fullWidth
                 name="creditAccountId"
-                size="medium"
+                size="small"
                 options={stateList}
                 value={stateValue} // Bind the selected value (object with `id`, `label`, `code`)
                 onChange={handleStateChange}
@@ -260,7 +325,7 @@ function ShippingForm() {
                 renderInput={(params) => (
                   <TextField
                     name="creditAccountId"
-                    size="medium"
+                    size="small"
                     required
                     {...params}
                     label="State"
@@ -273,6 +338,7 @@ function ShippingForm() {
               <TextField
                 label="City"
                 fullWidth
+                size="small"
                 onChange={(e) =>
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.Address.City", e.target.value)
                 }
@@ -281,6 +347,7 @@ function ShippingForm() {
 
             <Grid item xs={12} sm={6}>
               <TextField
+                size="small"
                 label="Postal code"
                 onChange={(e) =>
                   handleInputChange(
@@ -291,62 +358,85 @@ function ShippingForm() {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid display="flex" item xs={12} gap={2} sm={12}>
               <TextField
                 label="Address Line 1 *"
+                size="small"
                 onChange={(e) =>
                   handleInputChange(
                     "ShipmentRequest.Shipment.ShipTo.Address.AddressLine",
                     e.target.value
                   )
                 }
-                size="medium"
                 fullWidth
               />
+              <TextField label="Address Line 2" size="small" fullWidth />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Address Line 2" fullWidth />
-            </Grid>
+            <Grid item xs={12} sm={6}></Grid>
 
             {/* Country Selector */}
-
+            <Grid item xs={12}>
+              <Typography>Weight(KG) & Dimensions(In)</Typography>
+            </Grid>
             {/* Weight and Units */}
-            <Grid item xs={12} sm={6}>
-              <FormControl component="fieldset">
-                <RadioGroup row defaultValue="Pounds & Ounces">
-                  <FormControlLabel
-                    value="Pounds & Ounces"
-                    control={<Radio />}
-                    label="Pounds & Ounces"
-                  />
-                  <FormControlLabel value="Grams" control={<Radio />} label="Grams" />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Weight (LB)" type="number" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Weight (OZ)" type="number" fullWidth />
+            <Grid display="flex" item xs={12} gap={2} sm={6}>
+              <TextField
+                label="Weight (KG)"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.Package.PackageWeight.Weight",
+                    e.target.value
+                  )
+                }
+                size="small"
+                type="number"
+                fullWidth
+              />
+              <TextField label="Weight (Gram)" size="small" type="number" fullWidth />
             </Grid>
 
             {/* Dimensions */}
-            <Grid item xs={12} sm={6}>
-              <FormControl component="fieldset">
-                <RadioGroup row defaultValue="Inches">
-                  <FormControlLabel value="Inches" control={<Radio />} label="Inches" />
-                  <FormControlLabel value="Cm" control={<Radio />} label="Cm" />
-                </RadioGroup>
-              </FormControl>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                label="Size (L) inches"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.Package.Dimensions.Length",
+                    e.target.value
+                  )
+                }
+                size="small"
+                type="number"
+                fullWidth
+              />
             </Grid>
             <Grid item xs={12} sm={2}>
-              <TextField label="Size (L)" type="number" fullWidth />
+              <TextField
+                label="Size (W) inches"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.Package.Dimensions.Width",
+                    e.target.value
+                  )
+                }
+                size="small"
+                type="number"
+                fullWidth
+              />
             </Grid>
             <Grid item xs={12} sm={2}>
-              <TextField label="Size (W)" type="number" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={2}>
-              <TextField label="Size (H)" type="number" fullWidth />
+              <TextField
+                label="Size (H) inches"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest.Shipment.Package.Dimensions.Height",
+                    e.target.value
+                  )
+                }
+                size="small"
+                type="number"
+                fullWidth
+              />
             </Grid>
 
             {/* Package and Service */}

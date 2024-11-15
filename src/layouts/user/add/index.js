@@ -50,7 +50,8 @@ const baseURL = process.env.REACT_APP_API_URL;
 function AddUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const loginInfo = JSON.parse(localStorage?.getItem("userInfo"));
+  const roleId = loginInfo?.userLavel;
   const { register, control, handleSubmit, errors } = useForm();
   const [companyList, setCompanyList] = useState([]);
   const [curCompany, setCurCompany] = useState(null);
@@ -58,7 +59,7 @@ function AddUser() {
   const [userLavel, setUserLavel] = useState(3);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [companyId, setCompanyId] = useState("");
+  const [companyId, setCompanyId] = useState(loginInfo?.companyId);
   const [email, setEmail] = useState("");
   const [contactNo, setContactNo] = useState("");
   const [password, setPassword] = useState("");
@@ -157,45 +158,58 @@ function AddUser() {
               <CardContent>
                 {/* Weight Inputs */}
                 <Box display="flex" gap={2} mb={2}>
-                  <Autocomplete
-                    fullWidth
-                    name="creditAccountId"
-                    size="medium"
-                    options={companyList}
-                    value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-                    onChange={handleCompanyChange}
-                    getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-                    renderInput={(params) => (
-                      <TextField
-                        name="creditAccountId"
-                        size="medium"
-                        required
-                        {...params}
-                        label="Company"
-                      />
-                    )}
-                  />
-                  <FormControl fullWidth>
-                    <InputLabel id="user-role-select-label">Roll Right</InputLabel>
-                    <Select
-                      labelId="user-role-select-label"
-                      value={userLavel}
-                      onChange={(e) => setUserLavel(e.target.value)}
-                      label="Roll Right"
-                    >
-                      {companyId === 1 ? (
-                        <>
-                          <MenuItem value={1}>HO Admin</MenuItem>
-                          <MenuItem value={2}>HO User</MenuItem>
-                        </>
-                      ) : (
-                        <>
-                          <MenuItem value={1}>Company Admin</MenuItem>
-                          <MenuItem value={2}>Company User</MenuItem>
-                        </>
+                  {roleId === 1 || roleId === 2 ? (
+                    <Autocomplete
+                      fullWidth
+                      name="creditAccountId"
+                      size="medium"
+                      options={companyList}
+                      value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+                      onChange={handleCompanyChange}
+                      getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+                      renderInput={(params) => (
+                        <TextField
+                          name="creditAccountId"
+                          size="medium"
+                          required
+                          {...params}
+                          label="Company"
+                        />
                       )}
-                    </Select>
-                  </FormControl>
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  {/* <FormControl fullWidth> */}
+                  {/* <TextField
+                    label="Right"
+                    value={userLavel}
+                    onChange={(e) => setUserLavel(e.target.value)}
+                    variant="outlined"
+                    fullWidth
+                    select
+                  >
+                    <option>1</option>
+                    <option>1</option>
+                  </TextField> */}
+                  <select
+                    onChange={(e) => setUserLavel(e.target.value)}
+                    value={userLavel}
+                    label="Right"
+                  >
+                    {companyId === 1 ? (
+                      <>
+                        <option value={1}>HO Admin</option>
+                        <option value={2}>HO User</option>
+                      </>
+                    ) : (
+                      <>
+                        <option value={3}>CO Admin</option>
+                        <option value={4}>CO User</option>
+                      </>
+                    )}
+                  </select>
+                  {/* </FormControl> */}
                   <TextField
                     label="Email"
                     name="email"
@@ -209,6 +223,7 @@ function AddUser() {
                     label="First Name"
                     name="labelCount"
                     value={firstName}
+                    required
                     onChange={(e) => setFirstName(e.target.value)}
                     fullWidth
                   />
@@ -216,6 +231,7 @@ function AddUser() {
                     label="Last Name"
                     name="maxUser"
                     value={lastName}
+                    required
                     onChange={(e) => setLastName(e.target.value)}
                     fullWidth
                   />
@@ -225,6 +241,7 @@ function AddUser() {
                     label="Contact No"
                     value={contactNo}
                     name="contactNo"
+                    required
                     onChange={(e) => setContactNo(e.target.value)}
                     fullWidth
                   />
@@ -232,6 +249,7 @@ function AddUser() {
                     label="Password"
                     name="password"
                     value={password}
+                    required
                     onChange={(e) => setPassword(e.target.value)}
                     fullWidth
                   />

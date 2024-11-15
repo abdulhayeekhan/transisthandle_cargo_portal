@@ -43,8 +43,19 @@ export const AddNewUser = createAsyncThunk("addNewUser", async (data, { dispatch
         toast.success("" + response.data?.message);
         return response.data.data;
       })
-      .catch((error) => {
-        toast.error("" + error);
+      .catch((err) => {
+        //toast.error("" + err);
+        const status = err?.status;
+        console.log("status", err);
+        if (status === 404) {
+          toast.error("Please enter Valid email/password");
+        } else if (status === 403) {
+          toast.error("Your account is inactive. Please contact support for assistance");
+        } else if (status === 405) {
+          toast.error("Your company account is currently blocked.");
+        } else if (status === 411) {
+          toast.error("Your maximum users already created.");
+        }
       });
   } catch (error) {
     console.log(error);

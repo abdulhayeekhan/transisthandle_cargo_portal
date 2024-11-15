@@ -14,7 +14,8 @@ import ShipmentRate from "layouts/shipment/rate";
 import Users from "layouts/user";
 // @mui icons
 import Icon from "@mui/material/Icon";
-
+const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+const roleId = userInfo?.userLavel;
 const routes = [
   {
     type: "collapse",
@@ -24,6 +25,7 @@ const routes = [
     route: "/dashboard",
     component: Dashboard,
     private: true,
+    rolesAllowed: [1, 2, 3, 4],
   },
   {
     type: "collapse",
@@ -33,6 +35,7 @@ const routes = [
     route: "/shipment",
     component: Shipment,
     private: true,
+    rolesAllowed: [1, 2, 3, 4],
   },
   {
     type: "collapse",
@@ -42,6 +45,7 @@ const routes = [
     route: "/company",
     component: Company,
     private: true,
+    rolesAllowed: [1],
   },
   {
     type: "collapse",
@@ -51,6 +55,7 @@ const routes = [
     route: "/users",
     component: Users,
     private: true,
+    rolesAllowed: [1, 3],
   },
   {
     type: "collapse",
@@ -60,7 +65,10 @@ const routes = [
     route: "/billing",
     component: Billing,
     private: true,
+    rolesAllowed: [1],
   },
 ];
 
-export default routes;
+const filteredRoutes = routes.filter((route) => route.rolesAllowed.includes(roleId));
+
+export default filteredRoutes;

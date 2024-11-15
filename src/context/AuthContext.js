@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
         .then((response) => {
           // Save the token and email to localStorage
           localStorage.setItem("token", response.data.token);
-          localStorage.setItem("userInfo", response.data.data);
+          localStorage.setItem("userInfo", JSON.stringify(response.data.data));
           toast.success("" + response.data?.message);
           // Update state to reflect authentication
           setIsAuthenticated(true);
@@ -34,6 +34,8 @@ export const AuthProvider = ({ children }) => {
             toast.error("Your account is inactive. Please contact support for assistance");
           } else if (status === 405) {
             toast.error("Your company account is currently blocked.");
+          } else if (status === 411) {
+            toast.error("Your maximum users already created.");
           } else if (status === 500) {
             console.error("Error 500: Server error.");
           } else {
@@ -54,8 +56,11 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
+    const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+    console.log("userInfo", userInfo);
+    if (userInfo !== null) {
       setIsAuthenticated(true);
+      navigate("/dashboard");
     }
   }, []);
 

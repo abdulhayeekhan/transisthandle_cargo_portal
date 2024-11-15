@@ -21,10 +21,13 @@ import DataTable from "examples/Tables/DataTable";
 const baseURL = process.env.REACT_APP_API_URL;
 
 export default function Data() {
+  const loginInfo = JSON.parse(localStorage?.getItem("userInfo"));
+  const roleId = loginInfo?.userLavel;
   const dispatch = useDispatch();
   const [userInfo, setUserInfo] = useState([]);
   const [companyList, setCompanyList] = useState([]);
-  const [companyId, setCompanyId] = useState(1);
+  const [companyId, setCompanyId] = useState(loginInfo?.companyId);
+  console.log("companyId:", companyId);
   // Track page size
   const GetCompanyData = async () => {
     const { data } = await axios.get(`${baseURL}/company/getAllList`);
@@ -57,7 +60,7 @@ export default function Data() {
     }
   };
 
-  console.log("userInfo:", userInfo);
+  console.log("roleId:", roleId);
   // Calculate total pages
 
   const rows =
@@ -122,24 +125,28 @@ export default function Data() {
       <Grid container spacing={6}>
         <Grid item xs={12} md={8} />
         <Grid item xs={12} md={4}>
-          <Autocomplete
-            fullWidth
-            name="creditAccountId"
-            size="medium"
-            options={companyList}
-            value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-            onChange={handleCompanyChange}
-            getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-            renderInput={(params) => (
-              <TextField
-                name="creditAccountId"
-                size="medium"
-                required
-                {...params}
-                label="Company"
-              />
-            )}
-          />
+          {roleId === 1 || roleId === 2 ? (
+            <Autocomplete
+              fullWidth
+              name="creditAccountId"
+              size="medium"
+              options={companyList}
+              value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+              onChange={handleCompanyChange}
+              getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+              renderInput={(params) => (
+                <TextField
+                  name="creditAccountId"
+                  size="medium"
+                  required
+                  {...params}
+                  label="Company"
+                />
+              )}
+            />
+          ) : (
+            <></>
+          )}
         </Grid>
       </Grid>
       <DataTable
