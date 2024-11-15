@@ -9,6 +9,7 @@ const AuthContext = createContext();
 const baseURL = process.env.REACT_APP_API_URL;
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userLevel, setUserLevel] = useState("");
   const navigate = useNavigate();
 
   const login = async (email, password) => {
@@ -23,6 +24,7 @@ export const AuthProvider = ({ children }) => {
           toast.success("" + response.data?.message);
           // Update state to reflect authentication
           setIsAuthenticated(true);
+          setUserLevel(response?.data?.data?.userLavel);
           navigate("/dashboard");
         })
         .catch((err) => {
@@ -30,6 +32,8 @@ export const AuthProvider = ({ children }) => {
           const status = err?.response?.status;
           if (status === 404) {
             toast.error("Please enter Valid email/password");
+          } else if (status === 401) {
+            toast.error("Invalid credentials");
           } else if (status === 403) {
             toast.error("Your account is inactive. Please contact support for assistance");
           } else if (status === 405) {
@@ -44,6 +48,10 @@ export const AuthProvider = ({ children }) => {
         });
     } catch (error) {
       console.error("Login failed:", error);
+      const status = err?.response?.status;
+      if (status === 401) {
+        toast.error("Please enter Valid email/password");
+      }
       // Handle errors here (e.g., display an error message to the user)
     }
   };
@@ -57,9 +65,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
-    console.log("userInfo", userInfo);
+    console.log("token", token);
     if (userInfo !== null) {
       setIsAuthenticated(true);
+      setUserLevel(userInfo?.userLavel);
       navigate("/dashboard");
     }
   }, []);

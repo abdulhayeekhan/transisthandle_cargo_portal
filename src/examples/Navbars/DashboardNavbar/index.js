@@ -37,8 +37,11 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { Typography } from "@mui/material";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const loginInfo = JSON.parse(localStorage?.getItem("userInfo"));
+  const loginname = loginInfo?.firstName + " " + loginInfo?.lastName;
   const { logout } = useAuth();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
@@ -91,6 +94,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
+      <NotificationItem icon={<Icon>account_circle</Icon>} title={loginname} />
       <NotificationItem onClick={(e) => logout()} icon={<Icon>logout</Icon>} title="Logout" />
     </Menu>
   );
@@ -120,9 +124,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
+            {/* <MDBox pr={1}>
               <MDInput label="Search here" />
-            </MDBox>
+            </MDBox> */}
+            {/* <MDBox pr={1}>
+              <Typography>Abdul Hayee</Typography>
+            </MDBox> */}
             <MDBox color={light ? "white" : "inherit"}>
               {/* <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>

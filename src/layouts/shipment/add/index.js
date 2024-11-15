@@ -6,12 +6,14 @@ import {
   MenuItem,
   Button,
   Radio,
+  Box,
   RadioGroup,
   FormControlLabel,
   FormControl,
   InputLabel,
   Autocomplete,
   Typography,
+  Icon,
 } from "@mui/material";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
@@ -95,8 +97,8 @@ function ShippingForm() {
           },
         },
         Service: {
-          Code: "03",
-          Description: "Express",
+          Code: "86",
+          Description: "UPS Today Express Saver",
         },
         Package: {
           Description: " ",
@@ -115,10 +117,10 @@ function ShippingForm() {
           },
           PackageWeight: {
             UnitOfMeasurement: {
-              Code: "KG",
+              Code: "KGS",
               Description: "Kilograms",
             },
-            Weight: "5",
+            Weight: "",
           },
         },
       },
@@ -254,7 +256,9 @@ function ShippingForm() {
     }
   };
   console.log("shipmentInfo:", shipmentInfo);
-
+  const handleSaveCompany = (e) => {
+    e.preventDefault();
+  };
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
@@ -266,7 +270,7 @@ function ShippingForm() {
           marginY: 2,
         }}
       >
-        <form>
+        <form onSubmit={(e) => handleSaveShipment(e)}>
           <Grid container spacing={2}>
             {/* Top Section */}
             <Grid item xs={12}>
@@ -392,7 +396,7 @@ function ShippingForm() {
                 type="number"
                 fullWidth
               />
-              <TextField label="Weight (Gram)" size="small" type="number" fullWidth />
+              {/* <TextField label="Weight (Gram)" size="small" type="number" fullWidth /> */}
             </Grid>
 
             {/* Dimensions */}
@@ -522,12 +526,32 @@ function ShippingForm() {
               <TextField label="Quantity" type="number" fullWidth />
             </Grid>
             <Grid item xs={4}>
-              <TextField label="Item Value" type="number" fullWidth />
+              <TextField label="Item Value" required type="number" fullWidth />
             </Grid>
 
             {/* Total Value */}
             <Grid item xs={12} sm={6}>
               <TextField label="Total Value" type="number" fullWidth />
+            </Grid>
+
+            <Grid container spacing={6} mt={1}>
+              <Grid item xs={12}>
+                <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
+                  <Button variant="contained" style={{ color: "#fff" }} type="submit">
+                    <Icon fontSize="large">save</Icon>
+                    Save
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    onClick={(e) => navigate("/shipment")}
+                    style={{ color: "grey" }}
+                  >
+                    <Icon fontSize="large">close</Icon>
+                    Cancel
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
           </Grid>
         </form>
