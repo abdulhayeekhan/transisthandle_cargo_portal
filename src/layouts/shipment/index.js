@@ -1,5 +1,5 @@
 // @mui material components
-import Grid from "@mui/material/Grid";
+import { Grid, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -11,16 +11,30 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { Icon } from "@iconify/react";
-
 // Data
-import shipmentTableData from "layouts/shipment/data/shipmenttable";
+import ShipmentTableData from "layouts/shipment/data/shipmenttable";
 import { Button, Typography, TextField, Card, CardHeader, CardContent } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function Shipment() {
-  const { columns, rows } = shipmentTableData();
+  //const { columns, rows } = shipmentTableData();
   const navigate = useNavigate();
-
+  const trackingData = [
+    { date: "20241113", status: "DELIVERED", location: "TROY US" },
+    { date: "20241113", status: "Out For Delivery Today", location: "Latham US" },
+    { date: "20241113", status: "Processing at UPS Facility", location: "Latham US" },
+    { date: "20241113", status: "Arrived at Facility", location: "Latham US" },
+    { date: "20241113", status: "Departed from Facility", location: "Parsippany US" },
+    { date: "20241113", status: "Arrived at Facility", location: "Parsippany US" },
+    { date: "20241112", status: "Departed from Facility", location: "Philadelphia US" },
+    { date: "20241112", status: "Import Scan", location: "Philadelphia US" },
+    { date: "20241112", status: "Arrived at Facility", location: "Philadelphia US" },
+    { date: "20241112", status: "Departed from Facility", location: "Koeln DE" },
+    { date: "20241112", status: "Export Scan", location: "Koeln DE" },
+    { date: "20241111", status: "Arrived at Facility", location: "Koeln DE" },
+  ];
+  const handleTracking = (e) => {};
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
@@ -46,58 +60,11 @@ function Shipment() {
             </Grid>
           </Grid>
           <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <form>
-                  <Grid container spacing={6}>
-                    <Grid item xs={6} md={4}>
-                      <TextField
-                        label="Search by Date"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                      <TextField
-                        label="Search Tracking No"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                      <TextField
-                        label="Search Invoice No"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                    <Grid item xs={6} md={2}>
-                      <TextField
-                        label="Search by Company"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                  </Grid>
-                </form>
-              </CardContent>
-              <MDBox>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
+            <ShipmentTableData />
           </Grid>
         </Grid>
       </MDBox>
+
       <Footer />
     </DashboardLayout>
   );
