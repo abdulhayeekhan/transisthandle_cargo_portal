@@ -189,10 +189,10 @@ export default function Data() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [trackingStatus, setTrackingStatus] = useState([]);
-  const handleTracking = async(id) => {
+  const handleTracking = async (id) => {
     console.log("invoice:", id);
     setOpen(true);
-    const data = await axios.get(`${baseURL}/ups/tracking/${id}`,{
+    const data = await axios.get(`${baseURL}/ups/tracking/${id}`, {
       headers: {
         Authorization: token, // Replace 'yourToken' with your actual token
       },

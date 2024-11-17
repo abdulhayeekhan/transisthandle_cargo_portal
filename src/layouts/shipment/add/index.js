@@ -18,11 +18,19 @@ import {
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
 const baseURL = process.env.REACT_APP_API_URL;
 
 function ShippingForm() {
+  const navigate = useNavigate();
+  let token = localStorage.getItem("token");
+  const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
   const [stateValue, setStateValue] = useState(null);
   const [countryValue, setCountryValue] = useState(null);
+  const [email, setEmail] = useState("");
 
   const [countryId, setCountryId] = useState("");
   const [countryList, setCountryList] = useState([]);
@@ -37,6 +45,42 @@ function ShippingForm() {
   // ShipmentRequest.Shipment.Package.Dimensions.Length
   // ShipmentRequest.Shipment.Package.Dimensions.Width
   // ShipmentRequest.Shipment.Package.PackageWeight.Weight
+  const [declaration, setDeclaration] = useState([
+    {
+      arrayid: uuidv4(),
+      description: "",
+      Qty: 1,
+      unitPrice: 0,
+      HtsCode: "",
+      totalPrice: 0,
+    },
+  ]);
+  console.log("declaration:", declaration);
+  const handleNewRow = (e) => {
+    e.preventDefault();
+    setDeclaration([
+      ...declaration,
+      {
+        arrayid: uuidv4(),
+        description: "",
+        Qty: 1,
+        unitPrice: 0,
+        HtsCode: "",
+        totalPrice: 0,
+      },
+    ]);
+  };
+  const handleremoverow = async (id) => {
+    const NewRecord = await declaration.filter((data) => data.arrayid !== id);
+    setDeclaration(NewRecord);
+  };
+  const handleChangeRows = (e, id) => {
+    e.preventDefault();
+    const newRows = declaration?.map((item) =>
+      item.arrayid === id ? { ...item, [e.target.name]: e.target.value } : item
+    );
+    setDeclaration(newRows);
+  };
   const [shipmentInfo, setShipmentInfo] = useState({
     ShipmentRequest: {
       Request: {
@@ -51,11 +95,11 @@ function ShippingForm() {
           AttentionName: "Shahzad Choudary",
           TaxIdentificationNumber: "DE331991534",
           Phone: {
-            Number: "015202446893",
-            Extension: " ",
+            Number: "15202446893",
+            Extension: "0049",
           },
-          ShipperNumber: " ",
-          FaxNumber: "8002222222",
+          ShipperNumber: "A70C63",
+          FaxNumber: "015202446893",
           Address: {
             AddressLine: ["Butzweilerhof Allee 3"],
             City: "Koln",
@@ -75,7 +119,7 @@ function ShippingForm() {
             PostalCode: "",
             CountryCode: "",
           },
-          Residential: " ",
+          Residential: "false",
         },
         ShipFrom: {
           Name: "Escm GmbH",
@@ -97,8 +141,8 @@ function ShippingForm() {
           },
         },
         Service: {
-          Code: "86",
-          Description: "UPS Today Express Saver",
+          Code: "65",
+          Description: "UPS Saver",
         },
         Package: {
           Description: " ",
@@ -108,8 +152,8 @@ function ShippingForm() {
           },
           Dimensions: {
             UnitOfMeasurement: {
-              Code: "IN",
-              Description: "Inches",
+              Code: "CM",
+              Description: "Centimeters",
             },
             Length: "",
             Width: "",
@@ -133,7 +177,7 @@ function ShippingForm() {
       },
     },
   });
-
+  console.log("shipmentInfo", shipmentInfo);
   const handleInputChange = (path, value) => {
     setShipmentInfo((prevInfo) => {
       // Copy previous state
@@ -255,22 +299,51 @@ function ShippingForm() {
       }));
     }
   };
-  console.log("shipmentInfo:", shipmentInfo);
-  const handleSaveCompany = (e) => {
+
+  const current = new Date();
+
+  const shipDate = `${current.getFullYear()}-${("0" + (current.getMonth() + 1)).slice(-2)}-${(
+    "0" + current.getDate()
+  ).slice(-2)}`;
+
+  const handleSaveCompany = async (e) => {
+    e.preventDefault();
+    const body = {
+      shipData: shipmentInfo,
+      invoiceData: {
+        email,
+        createdBy: userInfo?.id,
+        shipDate,
+        clientCompanyId: userInfo?.companyId,
+        Details: declaration,
+      },
+    };
+    const headers = {
+      Authorization: token, // Replace with your actual token
+    };
+    await axios
+      .post(`${baseURL}/ups/generate-label`, body, { headers })
+      .then((response) => {
+        console.log("response", response);
+        toast.success("create successully");
+      })
+      .catch((error) => {
+        toast.error("" + error);
+      });
     e.preventDefault();
   };
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
-      <MDBox
-        sx={{
-          height: "70vh", // Set a fixed height for the scrollable area
-          overflowY: "auto", // Enable vertical scrolling
-          padding: 2,
-          marginY: 2,
-        }}
-      >
-        <form onSubmit={(e) => handleSaveShipment(e)}>
+      <form onSubmit={(e) => handleSaveCompany(e)}>
+        <MDBox
+          sx={{
+            height: "70vh", // Set a fixed height for the scrollable area
+            overflowY: "auto", // Enable vertical scrolling
+            padding: 2,
+            marginY: 2,
+          }}
+        >
           <Grid container spacing={2}>
             {/* Top Section */}
             <Grid item xs={12}>
@@ -293,6 +366,26 @@ function ShippingForm() {
                 onChange={(e) =>
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.Name", e.target.value)
                 }
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Contact"
+                onChange={(e) =>
+                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Phone.Number", e.target.value)
+                }
+                fullWidth
+                required
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 fullWidth
                 size="small"
               />
@@ -402,7 +495,7 @@ function ShippingForm() {
             {/* Dimensions */}
             <Grid item xs={12} sm={2}>
               <TextField
-                label="Size (L) inches"
+                label="Size (L) CM"
                 onChange={(e) =>
                   handleInputChange(
                     "ShipmentRequest.Shipment.Package.Dimensions.Length",
@@ -416,7 +509,7 @@ function ShippingForm() {
             </Grid>
             <Grid item xs={12} sm={2}>
               <TextField
-                label="Size (W) inches"
+                label="Size (W) CM"
                 onChange={(e) =>
                   handleInputChange(
                     "ShipmentRequest.Shipment.Package.Dimensions.Width",
@@ -430,7 +523,7 @@ function ShippingForm() {
             </Grid>
             <Grid item xs={12} sm={2}>
               <TextField
-                label="Size (H) inches"
+                label="Size (H) CM"
                 onChange={(e) =>
                   handleInputChange(
                     "ShipmentRequest.Shipment.Package.Dimensions.Height",
@@ -443,119 +536,108 @@ function ShippingForm() {
               />
             </Grid>
 
-            {/* Package and Service */}
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Package</InputLabel>
-                <Select defaultValue="UPS Package">
-                  <MenuItem value="UPS Package">UPS Package</MenuItem>
-                  {/* Add other package options as needed */}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Service</InputLabel>
-                <Select defaultValue="Saver - DaimonShip">
-                  <MenuItem value="Saver - DaimonShip">Saver - DaimonShip</MenuItem>
-                  {/* Add other service options as needed */}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* Signature */}
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Signature</InputLabel>
-                <Select defaultValue="Delivery">
-                  <MenuItem value="Delivery">Delivery</MenuItem>
-                  {/* Add other signature options as needed */}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {/* Contact Information */}
-            <Grid item xs={12} sm={4}>
-              <TextField label="City" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField label="State" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField label="Postal Code" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Phone" fullWidth />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField label="Email" type="email" fullWidth />
-            </Grid>
-
-            {/* Customs Declarations */}
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Contents</InputLabel>
-                <Select defaultValue="Merchandise">
-                  <MenuItem value="Merchandise">Merchandise</MenuItem>
-                  {/* Add other content options as needed */}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>If Undeliverable</InputLabel>
-                <Select defaultValue="Return To Sender">
-                  <MenuItem value="Return To Sender">Return To Sender</MenuItem>
-                  {/* Add other options as needed */}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField label="Export Declaration Number" fullWidth />
-            </Grid>
-
+            <Typography mt={2}>Declaration</Typography>
             {/* Declaration Section */}
-            <Grid item xs={12}>
-              <TextField label="Description" fullWidth />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField label="SKU" fullWidth />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField label="Quantity" type="number" fullWidth />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField label="Item Value" required type="number" fullWidth />
+            <Grid container spacing={6}>
+              {declaration?.map((item) => (
+                <>
+                  <Grid item xs={4}>
+                    <TextField
+                      label="Description"
+                      name="description"
+                      value={item?.description}
+                      fullWidth
+                      onChange={(e) => handleChangeRows(e, item?.arrayid)}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Hts Code"
+                      name="HtsCode"
+                      onChange={(e) => handleChangeRows(e, item?.arrayid)}
+                      value={item?.HtsCode}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={1}>
+                    <TextField
+                      label="Quantity"
+                      name="Qty"
+                      value={item?.Qty}
+                      onChange={(e) => handleChangeRows(e, item?.arrayid)}
+                      type="number"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Item Value"
+                      name="unitPrice"
+                      value={item?.unitPrice}
+                      onChange={(e) => handleChangeRows(e, item?.arrayid)}
+                      required
+                      type="number"
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <TextField
+                      label="Total Value"
+                      required
+                      name="totalPrice"
+                      value={item?.Qty * item?.unitPrice}
+                      onInput={(e) => handleChangeRows(e, item?.arrayid)}
+                      type="number"
+                      fullWidth
+                      InputProps={{
+                        readOnly: true, // Makes the field readonly
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={1}>
+                    <Button
+                      style={{ color: "red", justifyContent: "center" }}
+                      onClick={() => handleremoverow(item?.arrayid)}
+                    >
+                      <Icon fontSize="large">delete_forever</Icon>
+                    </Button>
+                  </Grid>
+                </>
+              ))}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  onClick={handleNewRow}
+                  style={{ color: "#fff", justifyContent: "center" }}
+                >
+                  Add More
+                </Button>
+              </Grid>
             </Grid>
 
             {/* Total Value */}
-            <Grid item xs={12} sm={6}>
-              <TextField label="Total Value" type="number" fullWidth />
-            </Grid>
-
-            <Grid container spacing={6} mt={1}>
-              <Grid item xs={12}>
-                <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
-                  <Button variant="contained" style={{ color: "#fff" }} type="submit">
-                    <Icon fontSize="large">save</Icon>
-                    Save
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    onClick={(e) => navigate("/shipment")}
-                    style={{ color: "grey" }}
-                  >
-                    <Icon fontSize="large">close</Icon>
-                    Cancel
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
           </Grid>
-        </form>
-      </MDBox>
+        </MDBox>
+        <Grid container spacing={6} mt={1}>
+          <Grid item xs={12}>
+            <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
+              <Button variant="contained" style={{ color: "#fff" }} type="submit">
+                <Icon fontSize="large">save</Icon>
+                Save
+              </Button>
+
+              <Button
+                variant="outlined"
+                onClick={(e) => navigate("/shipment")}
+                style={{ color: "grey" }}
+              >
+                <Icon fontSize="large">close</Icon>
+                Cancel
+              </Button>
+            </Box>
+          </Grid>
+        </Grid>
+      </form>
     </DashboardLayout>
   );
 }

@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }) => {
           toast.success("" + response.data?.message);
           // Update state to reflect authentication
           setIsAuthenticated(true);
+          console.log("response?.data?.data?.userLavel", response?.data?.data?.userLavel);
           setUserLevel(response?.data?.data?.userLavel);
           navigate("/dashboard");
         })
@@ -74,7 +75,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, userLevel }}>
       {children}
     </AuthContext.Provider>
   );

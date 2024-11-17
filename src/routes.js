@@ -16,7 +16,13 @@ import PropTypes from "prop-types";
 import { useAuth } from "context/AuthContext";
 // @mui icons
 import Icon from "@mui/material/Icon";
-
+import { useContext, useEffect, useState } from "react";
+// const [roleId, setRoleId] = useState(null);
+// useEffect(() => {
+//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+//   const roleId = userInfo?.userLavel;
+//   setRoleId(fetchedRoleId);
+// }, []);
 const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
 const roleId = userInfo?.userLavel;
 
@@ -42,18 +48,19 @@ const routes = [
     private: true,
     rolesAllowed: [1, 2, 3, 4],
   },
-  roleId === 1 && {
-    type: "collapse",
-    name: "Company",
-    key: "company",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/company",
-    component: Company,
-    private: true,
-    rolesAllowed: [1],
-  },
-  roleId === 1 &&
-    roleId === 3 && {
+  roleId === 1 ||
+    (roleId === 3 && {
+      type: "collapse",
+      name: "Company",
+      key: "company",
+      icon: <Icon fontSize="small">table_view</Icon>,
+      route: "/company",
+      component: Company,
+      private: true,
+      rolesAllowed: [1],
+    }),
+  roleId === 1 ||
+    (roleId === 3 && {
       type: "collapse",
       name: "Users",
       key: "users",
@@ -62,7 +69,7 @@ const routes = [
       component: Users,
       private: true,
       rolesAllowed: [1, 3],
-    },
+    }),
   roleId === 1 && {
     type: "collapse",
     name: "Billing",
@@ -141,6 +148,6 @@ const routes = [
 //   return routes;
 // };
 
-// const filteredRoutes = routes.filter((route) => route.rolesAllowed.includes(roleId));
+//const filteredRoutes = routes.filter((route) => route.rolesAllowed.includes(roleId));
 
 export default routes;
