@@ -61,9 +61,13 @@ function Footer({ company, links }) {
         px={1.5}
       >
         &copy; {new Date().getFullYear()}, All Rights Reserved by
-        <Link href={href} target="_blank">
+        <MDTypography variant="button" fontWeight="medium">
+          ESCM GmbH
+        </MDTypography>
+        & powered by
+        <Link href={"https://movebox.pk"} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
-            &nbsp;{name}&nbsp;
+            &nbsp;MovBox Tech&nbsp;
           </MDTypography>
         </Link>
       </MDBox>

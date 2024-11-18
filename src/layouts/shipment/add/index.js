@@ -28,6 +28,7 @@ function ShippingForm() {
   const navigate = useNavigate();
   let token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+
   const [stateValue, setStateValue] = useState(null);
   const [countryValue, setCountryValue] = useState(null);
   const [email, setEmail] = useState("");
@@ -86,7 +87,7 @@ function ShippingForm() {
       Request: {
         SubVersion: "1801",
         RequestOption: "nonvalidate",
-        TransactionReference: { CustomerContext: "" },
+        TransactionReference: { CustomerContext: "New port" },
       },
       Shipment: {
         Description: "Ship WS test",
@@ -145,7 +146,7 @@ function ShippingForm() {
           Description: "UPS Saver",
         },
         Package: {
-          Description: " ",
+          Description: "ABC",
           Packaging: {
             Code: "02",
             Description: "Nails",
@@ -305,9 +306,10 @@ function ShippingForm() {
   const shipDate = `${current.getFullYear()}-${("0" + (current.getMonth() + 1)).slice(-2)}-${(
     "0" + current.getDate()
   ).slice(-2)}`;
-
+  const [saveButton, setSaveButton] = useState(false);
   const handleSaveCompany = async (e) => {
     e.preventDefault();
+    setSaveButton(true);
     const body = {
       shipData: shipmentInfo,
       invoiceData: {
@@ -325,10 +327,12 @@ function ShippingForm() {
       .post(`${baseURL}/ups/generate-label`, body, { headers })
       .then((response) => {
         console.log("response", response);
+        setSaveButton(true);
         toast.success("create successully");
       })
       .catch((error) => {
         toast.error("" + error);
+        setSaveButton(false);
       });
     e.preventDefault();
   };
@@ -338,7 +342,7 @@ function ShippingForm() {
       <form onSubmit={(e) => handleSaveCompany(e)}>
         <MDBox
           sx={{
-            height: "70vh", // Set a fixed height for the scrollable area
+            height: "60vh", // Set a fixed height for the scrollable area
             overflowY: "auto", // Enable vertical scrolling
             padding: 2,
             marginY: 2,
@@ -367,6 +371,7 @@ function ShippingForm() {
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.Name", e.target.value)
                 }
                 fullWidth
+                required
                 size="small"
               />
             </Grid>
@@ -387,6 +392,7 @@ function ShippingForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 fullWidth
+                required
                 size="small"
               />
             </Grid>
@@ -436,6 +442,7 @@ function ShippingForm() {
                 label="City"
                 fullWidth
                 size="small"
+                required
                 onChange={(e) =>
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.Address.City", e.target.value)
                 }
@@ -452,6 +459,7 @@ function ShippingForm() {
                     e.target.value
                   )
                 }
+                required
                 fullWidth
               />
             </Grid>
@@ -459,6 +467,7 @@ function ShippingForm() {
               <TextField
                 label="Address Line 1 *"
                 size="small"
+                required
                 onChange={(e) =>
                   handleInputChange(
                     "ShipmentRequest.Shipment.ShipTo.Address.AddressLine",
@@ -467,7 +476,7 @@ function ShippingForm() {
                 }
                 fullWidth
               />
-              <TextField label="Address Line 2" size="small" fullWidth />
+              {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
             </Grid>
             <Grid item xs={12} sm={6}></Grid>
 
@@ -487,6 +496,7 @@ function ShippingForm() {
                 }
                 size="small"
                 type="number"
+                required
                 fullWidth
               />
               {/* <TextField label="Weight (Gram)" size="small" type="number" fullWidth /> */}
@@ -502,6 +512,7 @@ function ShippingForm() {
                     e.target.value
                   )
                 }
+                required
                 size="small"
                 type="number"
                 fullWidth
@@ -516,6 +527,7 @@ function ShippingForm() {
                     e.target.value
                   )
                 }
+                required
                 size="small"
                 type="number"
                 fullWidth
@@ -530,6 +542,7 @@ function ShippingForm() {
                     e.target.value
                   )
                 }
+                required
                 size="small"
                 type="number"
                 fullWidth
@@ -547,6 +560,7 @@ function ShippingForm() {
                       name="description"
                       value={item?.description}
                       fullWidth
+                      required
                       onChange={(e) => handleChangeRows(e, item?.arrayid)}
                     />
                   </Grid>
@@ -556,6 +570,7 @@ function ShippingForm() {
                       name="HtsCode"
                       onChange={(e) => handleChangeRows(e, item?.arrayid)}
                       value={item?.HtsCode}
+                      required
                       fullWidth
                     />
                   </Grid>
@@ -566,6 +581,7 @@ function ShippingForm() {
                       value={item?.Qty}
                       onChange={(e) => handleChangeRows(e, item?.arrayid)}
                       type="number"
+                      required
                       fullWidth
                     />
                   </Grid>
@@ -621,7 +637,12 @@ function ShippingForm() {
         <Grid container spacing={6} mt={1}>
           <Grid item xs={12}>
             <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
-              <Button variant="contained" style={{ color: "#fff" }} type="submit">
+              <Button
+                variant="contained"
+                style={{ color: "#fff" }}
+                disabled={saveButton}
+                type="submit"
+              >
                 <Icon fontSize="large">save</Icon>
                 Save
               </Button>

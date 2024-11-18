@@ -33,6 +33,7 @@ const Basic = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   // const handleLogin = () => {
   //   const body = {
@@ -46,16 +47,19 @@ const Basic = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (!email || !password) {
       setError("Please provide both email and password.");
+      setIsLoading(false);
       return;
     }
 
     try {
       await login(email, password); // Call the login function from context
+      setIsLoading(false);
     } catch (err) {
       setError("Login failed. Please try again.");
+      setIsLoading(false);
     }
   };
   return (
@@ -110,11 +114,11 @@ const Basic = () => {
               <MDButton
                 variant="gradient"
                 color="info"
-                disabled={email && password && rememberMe ? true : false}
+                disabled={email && password && rememberMe && !isLoading ? true : false}
                 onClick={handleLogin}
                 fullWidth
               >
-                sign in
+                {isLoading ? "Loading ..." : "sign in"}
               </MDButton>
             </MDBox>
           </MDBox>
