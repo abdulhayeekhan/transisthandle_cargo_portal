@@ -328,6 +328,7 @@ function ShippingForm() {
       .then((response) => {
         console.log("response", response);
         setSaveButton(true);
+        navigate("/shipment");
         toast.success("create successully");
       })
       .catch((error) => {

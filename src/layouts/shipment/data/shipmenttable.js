@@ -39,6 +39,7 @@ import {
   TimelineDot,
 } from "@mui/lab";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
@@ -46,8 +47,74 @@ export default function Data() {
   const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
   const userLavelId = userInfo?.userLavel;
   console.log("userInfo", userInfo);
-  const handleDownloadInvoice = (id) => {
-    console.log("invoice:", id);
+
+  const handleDownloadInvoice = async (id) => {
+    try {
+      const data = await axios.get(`${baseURL}/ups/invoice/${id}`);
+      const response = data?.data;
+      console.log("response:", response);
+      const doc = new jsPDF();
+
+      // Add title
+      doc.setFontSize(16);
+      doc.text("INVOICE", 105, 20, { align: "center" });
+
+      // Sender details
+      doc.setFontSize(12);
+      doc.text("SENT BY:", 10, 30);
+      doc.text("Sender Name: ESCM GMBH", 10, 40);
+      doc.text("Address: Köln, Germany 50829", 10, 50);
+      doc.text("Phone: 0049-15202446893", 10, 60);
+      doc.text("Country: GER", 10, 70);
+
+      // Receiver details
+      doc.text("SHIP TO:", 105, 30);
+      doc.text(`Consignee Name: ${response?.name}`, 105, 40);
+      doc.text(
+        `Address: ${response?.address}, ${response?.city}, ${response?.stateCode} ${response?.postalCode} ${response?.countryCode}`,
+        105,
+        50
+      );
+      doc.text(`Phone: ${response?.contactNo}`, 105, 60);
+      doc.text(`Country: ${response?.countryCode}`, 105, 70);
+
+      // Invoice details
+      doc.text(`Invoice No: ${response?.invoiceId}`, 10, 90);
+      doc.text(`Tracking No: ${response?.trackingNo}`, 10, 100);
+
+      // Table for products
+      const tableColumn = ["Description", "Qty", "Unit Price", "Hts Code", "Total Price"];
+      const tableRows = response?.details?.map((item) => [
+        `${item?.description}`,
+        `${item?.Qty}`,
+        `${item?.unitPrice}`,
+        `${item?.HtsCode}`,
+        `${item?.Qty * item?.unitPrice}`,
+      ]);
+
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 110,
+      });
+
+      const totalPrice = response?.details?.reduce(
+        (sum, item) => sum + (item.unitPrice * item.Qty || 0),
+        0
+      );
+      // Total Amount
+      doc.setFontSize(12);
+      doc.text(`Total: ${totalPrice}`, 10, doc.lastAutoTable.finalY + 20);
+
+      // Footer
+      doc.text("NAME: ESCM GMBH", 10, doc.lastAutoTable.finalY + 40);
+      doc.text("SIGNATURE", 10, doc.lastAutoTable.finalY + 50);
+
+      // Save PDF
+      doc.save(`${response?.trackingNo}.pdf`);
+    } catch (error) {
+      toast.error("Inoice Download Error");
+    }
   };
   let token = localStorage.getItem("token");
   const [open, setOpen] = useState(false);
@@ -107,7 +174,9 @@ export default function Data() {
   const [companyName, setCompanyName] = useState("");
   const [startDate, setStartDate] = useState(fromDate);
   const [endDate, setEndDate] = useState(toDate);
-  const [clientCompanyId, setClientCompanyId] = useState("");
+  const [clientCompanyId, setClientCompanyId] = useState(
+    userLavelId === 1 || userLavelId === 2 ? "" : userInfo?.companyId
+  );
   const [shipInfo, setShipInfo] = useState([]);
   const [companyList, setCompanyList] = useState([]);
   const GetCompanyData = async () => {
@@ -123,6 +192,7 @@ export default function Data() {
       companyName,
       trackingNo,
     };
+    console.log("body", body);
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
     console.log("shipInfodata:", data);
     setShipInfo(data);
@@ -147,25 +217,29 @@ export default function Data() {
   };
   const handleTracking = async (id) => {
     setOpen(true);
+    // try {
     const data = await axios.get(`${baseURL}/ups/tracking/${id}`, {
       headers: {
         Authorization: token, // Replace 'yourToken' with your actual token
       },
     });
-    const errorCode = data?.data?.trackResponse.shipment[0]?.warnings[0]?.code;
-    console.log("handleTracking:", data?.data?.trackResponse.shipment[0]?.warnings[0]?.code);
-    const errorMessage = data?.data?.trackResponse.shipment[0]?.warnings[0]?.message;
-    if (errorCode === "TW0001") {
-      setTrackingStatus([{ ...trackingStatus, date: "", status: errorMessage, location: "" }]);
-    } else {
-      const statusData = data?.data?.trackResponse?.shipment[0]?.package[0]?.activity;
-      const selectedData = statusData.map((item) => ({
-        date: item.date,
-        status: item.status.description,
-        location: item.location?.address?.city,
-      }));
-      setTrackingStatus(selectedData);
-    }
+    // const errorCode = data?.data?.trackResponse.shipment[0]?.warnings[0]?.code; //shipment[0]?.warnings[0]?.code
+    // console.log("handleTracking:", data?.data?.trackResponse);
+    // const errorMessage = data?.data?.trackResponse.shipment[0]?.warnings[0]?.message;
+    // if (errorCode === "TW0001") {
+    //   setTrackingStatus([{ ...trackingStatus, date: "", status: errorMessage, location: "" }]);
+    // } else {
+    const statusData = data?.data?.trackResponse?.shipment[0]?.package[0]?.activity;
+    const selectedData = statusData.map((item) => ({
+      date: item.date,
+      status: item.status.description,
+      location: item.location?.address?.city,
+    }));
+    setTrackingStatus(selectedData);
+    // }
+    // } catch (error) {
+    //     toast.error(""+error);
+    // }
   };
   const rows = shipInfo.map((user) => ({
     company: (

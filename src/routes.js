@@ -25,7 +25,7 @@ import { useContext, useEffect, useState } from "react";
 // }, []);
 const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
 const roleId = userInfo?.userLavel;
-
+console.log("roleId", roleId);
 // console.log("userLevel:", userLevel);
 const routes = [
   {
@@ -48,28 +48,26 @@ const routes = [
     private: true,
     rolesAllowed: [1, 2, 3, 4],
   },
-  roleId === 1 ||
-    (roleId === 3 && {
-      type: "collapse",
-      name: "Company",
-      key: "company",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/company",
-      component: Company,
-      private: true,
-      rolesAllowed: [1],
-    }),
-  roleId === 1 ||
-    (roleId === 3 && {
-      type: "collapse",
-      name: "Users",
-      key: "users",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/users",
-      component: Users,
-      private: true,
-      rolesAllowed: [1, 3],
-    }),
+  (roleId === 1 || roleId === 2) && {
+    type: "collapse",
+    name: "Company",
+    key: "company",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/company",
+    component: Company,
+    private: true,
+    rolesAllowed: [1],
+  },
+  (roleId === 1 || roleId === 3) && {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/users",
+    component: Users,
+    private: true,
+    rolesAllowed: [1, 3],
+  },
   roleId === 1 && {
     type: "collapse",
     name: "Billing",
