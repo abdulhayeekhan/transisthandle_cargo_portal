@@ -63,9 +63,9 @@ export default function Data() {
       doc.setFontSize(12);
       doc.text("SENT BY:", 10, 30);
       doc.text("Sender Name: ESCM GMBH", 10, 40);
-      doc.text("Address: Köln, Germany 50829", 10, 50);
+      doc.text("Address: Koln, Germany 50829", 10, 50);
       doc.text("Phone: 0049-15202446893", 10, 60);
-      doc.text("Country: GER", 10, 70);
+      doc.text("Country: Germany", 10, 70);
 
       // Receiver details
       doc.text("SHIP TO:", 105, 30);
@@ -83,12 +83,12 @@ export default function Data() {
       doc.text(`Tracking No: ${response?.trackingNo}`, 10, 100);
 
       // Table for products
-      const tableColumn = ["Description", "Qty", "Unit Price", "Hts Code", "Total Price"];
+      const tableColumn = ["Description", "Hts Code", "Qty", "Unit Price", "Total Price"];
       const tableRows = response?.details?.map((item) => [
         `${item?.description}`,
+        `${item?.HtsCode}`,
         `${item?.Qty}`,
         `${item?.unitPrice}`,
-        `${item?.HtsCode}`,
         `${item?.Qty * item?.unitPrice}`,
       ]);
 
