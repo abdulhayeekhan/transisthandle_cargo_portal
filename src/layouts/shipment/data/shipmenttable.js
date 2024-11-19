@@ -116,7 +116,7 @@ export default function Data() {
       toast.error("Inoice Download Error");
     }
   };
-  let token = localStorage.getItem("token");
+
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pdfBase64, setPdfBase64] = useState("");
@@ -165,6 +165,8 @@ export default function Data() {
   const today = new Date();
   const last7Days = new Date(today);
   last7Days.setDate(today.getDate() - 7);
+  const nextDay = new Date(today);
+  nextDay.setDate(today.getDate() + 1);
   const fromateDate = (date) => date.toISOString().split("T")[0];
   const fromDate = fromateDate(last7Days);
   const toDate = fromateDate(today);
@@ -173,7 +175,7 @@ export default function Data() {
   const [createdBy, setCreatedBy] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [startDate, setStartDate] = useState(fromDate);
-  const [endDate, setEndDate] = useState(toDate);
+  const [endDate, setEndDate] = useState(nextDay);
   const [clientCompanyId, setClientCompanyId] = useState(
     userLavelId === 1 || userLavelId === 2 ? "" : userInfo?.companyId
   );
@@ -183,6 +185,7 @@ export default function Data() {
     const { data } = await axios.get(`${baseURL}/company/getAllList`);
     setCompanyList(data);
   };
+  let information = "";
   const GetShipmentData = async () => {
     const body = {
       startDate,
@@ -192,9 +195,7 @@ export default function Data() {
       companyName,
       trackingNo,
     };
-    console.log("body", body);
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
-    console.log("shipInfodata:", data);
     setShipInfo(data);
   };
   console.log("shipInfo:", shipInfo);
@@ -392,29 +393,28 @@ export default function Data() {
               <Grid item xs={6} md={2}>
                 <TextField label="Search Invoice No" variant="outlined" fullWidth margin="normal" />
               </Grid>
-              {userLavelId === 1 ||
-                (userLavelId === 2 && (
-                  <Grid item xs={6} md={2}>
-                    <Autocomplete
-                      fullWidth
-                      name="creditAccountId"
-                      size="medium"
-                      options={companyList}
-                      value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-                      onChange={handleCompanyChange}
-                      getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-                      renderInput={(params) => (
-                        <TextField
-                          name="creditAccountId"
-                          size="medium"
-                          required
-                          {...params}
-                          label="Company"
-                        />
-                      )}
-                    />
-                  </Grid>
-                ))}
+              {(userLavelId === 1 || userLavelId === 2) && (
+                <Grid item xs={6} md={2}>
+                  <Autocomplete
+                    fullWidth
+                    name="creditAccountId"
+                    size="medium"
+                    options={companyList}
+                    value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+                    onChange={handleCompanyChange}
+                    getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+                    renderInput={(params) => (
+                      <TextField
+                        name="creditAccountId"
+                        size="medium"
+                        required
+                        {...params}
+                        label="Company"
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
             </Grid>
           </form>
         </CardContent>

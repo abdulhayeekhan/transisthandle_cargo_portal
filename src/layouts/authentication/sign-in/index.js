@@ -27,6 +27,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import brandDark from "assets/images/logo-cargo.png";
 import { useAuth } from "context/AuthContext";
+import { toast } from "react-toastify";
 
 const Basic = () => {
   const [rememberMe, setRememberMe] = useState(false);
@@ -59,6 +60,15 @@ const Basic = () => {
       setIsLoading(false);
     } catch (err) {
       setError("Login failed. Please try again.");
+      if (err.response && err.response.status === 401) {
+        toast.error("Invalid email or password. Please try again.");
+      } else if (err.response && err.response.status === 400) {
+        toast.error("Bad request. Please check your input.");
+      } else if (err.response && err.response.status === 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error(err.message || "An unexpected error occurred. Please try again.");
+      }
       setIsLoading(false);
     }
   };

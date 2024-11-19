@@ -36,9 +36,24 @@ function ShippingForm() {
   const [countryId, setCountryId] = useState("");
   const [countryList, setCountryList] = useState([]);
   const [stateList, setStateList] = useState([]);
-
+  const [companyName, setCompanyName] = useState("");
   const [shipCountryCode, setShipCountryCode] = useState("");
   const [shipStateCode, setShipStateCode] = useState("");
+  const GetCompanyInformation = async () => {
+    const data = await axios.get(`${baseURL}/company/getSingle/${userInfo?.companyId}`);
+    console.log("company data:", data?.data?.companyName);
+    setCompanyName(data?.data?.companyName);
+    setShipmentInfo((prevState) => ({
+      ...prevState,
+      ShipmentRequest: {
+        ...prevState.ShipmentRequest,
+        Shipment: {
+          ...prevState.ShipmentRequest.Shipment,
+          Description: data?.data?.companyName,
+        },
+      },
+    }));
+  };
   // console.log("shipCountryCode:", shipCountryCode);
   // setShipmentInfo({...shipmentInfo,ShipmentRequest.Shipment.ShipTo.Address.CountryCode})
   // ShipmentRequest.Shipment.ShipTo.Address.CountryCode.StateProvinceCode
@@ -82,15 +97,16 @@ function ShippingForm() {
     );
     setDeclaration(newRows);
   };
+  // ShipmentRequest?.Request?.TransactionReference?.CustomerContext
   const [shipmentInfo, setShipmentInfo] = useState({
     ShipmentRequest: {
       Request: {
         SubVersion: "1801",
         RequestOption: "nonvalidate",
-        TransactionReference: { CustomerContext: "New port" },
+        TransactionReference: { CustomerContext: "" },
       },
       Shipment: {
-        Description: "Ship WS test",
+        Description: "",
         Shipper: {
           Name: "Escm GmbH",
           AttentionName: "Shahzad Choudary",
@@ -213,6 +229,7 @@ function ShippingForm() {
 
   useEffect(() => {
     GetCountryies();
+    GetCompanyInformation();
   }, [countryId, shipStateCode, shipCountryCode]);
 
   const handleCountryChange = async (event, newValue) => {
@@ -397,6 +414,20 @@ function ShippingForm() {
                 size="small"
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Customer Reference"
+                onChange={(e) =>
+                  handleInputChange(
+                    "ShipmentRequest?.Request?.TransactionReference?.CustomerContext",
+                    e.target.value
+                  )
+                }
+                fullWidth
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} />
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 fullWidth

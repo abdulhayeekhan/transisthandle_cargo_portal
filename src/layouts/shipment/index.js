@@ -20,20 +20,6 @@ import { useState } from "react";
 function Shipment() {
   //const { columns, rows } = shipmentTableData();
   const navigate = useNavigate();
-  const trackingData = [
-    { date: "20241113", status: "DELIVERED", location: "TROY US" },
-    { date: "20241113", status: "Out For Delivery Today", location: "Latham US" },
-    { date: "20241113", status: "Processing at UPS Facility", location: "Latham US" },
-    { date: "20241113", status: "Arrived at Facility", location: "Latham US" },
-    { date: "20241113", status: "Departed from Facility", location: "Parsippany US" },
-    { date: "20241113", status: "Arrived at Facility", location: "Parsippany US" },
-    { date: "20241112", status: "Departed from Facility", location: "Philadelphia US" },
-    { date: "20241112", status: "Import Scan", location: "Philadelphia US" },
-    { date: "20241112", status: "Arrived at Facility", location: "Philadelphia US" },
-    { date: "20241112", status: "Departed from Facility", location: "Koeln DE" },
-    { date: "20241112", status: "Export Scan", location: "Koeln DE" },
-    { date: "20241111", status: "Arrived at Facility", location: "Koeln DE" },
-  ];
   const handleTracking = (e) => {};
   return (
     <DashboardLayout>
