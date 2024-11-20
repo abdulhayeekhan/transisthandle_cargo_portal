@@ -162,13 +162,13 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-
+  const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
   return (
     <AuthProvider>
       <ThemeProvider theme={darkMode ? themeDark : theme}>
         <ToastContainer />
         <CssBaseline />
-        {layout === "dashboard" && (
+        {layout === "dashboard" && userInfo !== null && (
           <>
             <Sidenav
               color={sidenavColor}

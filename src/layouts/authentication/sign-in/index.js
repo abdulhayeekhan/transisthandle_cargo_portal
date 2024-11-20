@@ -50,7 +50,7 @@ const Basic = () => {
     e.preventDefault();
     setIsLoading(true);
     if (!email || !password) {
-      setError("Please provide both email and password.");
+      toast.error("Please provide both email and password.");
       setIsLoading(false);
       return;
     }
@@ -59,7 +59,7 @@ const Basic = () => {
       await login(email, password); // Call the login function from context
       setIsLoading(false);
     } catch (err) {
-      setError("Login failed. Please try again.");
+      //toast.error("Login failed. Please try again.");
       if (err.response && err.response.status === 401) {
         toast.error("Invalid email or password. Please try again.");
       } else if (err.response && err.response.status === 400) {

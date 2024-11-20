@@ -1,5 +1,12 @@
 // @mui material components
-import { Grid, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import {
+  Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  LinearProgress,
+} from "@mui/material";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";

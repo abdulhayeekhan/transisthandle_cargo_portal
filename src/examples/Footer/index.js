@@ -62,14 +62,14 @@ function Footer({ company, links }) {
       >
         &copy; {new Date().getFullYear()}, All Rights Reserved by
         <MDTypography variant="button" fontWeight="medium">
-          ESCM GmbH
+          Transit Handels Cargo Pvt. ltd.
         </MDTypography>
-        & powered by
+        {/* & Powered by
         <Link href={"https://movebox.pk"} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
             &nbsp;MovBox Tech&nbsp;
           </MDTypography>
-        </Link>
+        </Link> */}
       </MDBox>
     </MDBox>
   );

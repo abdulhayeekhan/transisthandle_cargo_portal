@@ -79,61 +79,70 @@ const routes = [
     rolesAllowed: [1],
   },
 ];
-// const getRoutes = (userLevel) => {
-//   return [
-//     {
-//       type: "collapse",
-//       name: "Dashboard",
-//       key: "dashboard",
-//       icon: <Icon fontSize="small">dashboard</Icon>,
-//       route: "/dashboard",
-//       component: Dashboard,
-//       private: true,
-//       rolesAllowed: [1, 2, 3, 4],
-//     },
-//     {
-//       type: "collapse",
-//       name: "Shipment",
-//       key: "shipment",
-//       icon: <Icon fontSize="small">table_view</Icon>,
-//       route: "/shipment",
-//       component: Shipment,
-//       private: true,
-//       rolesAllowed: [1, 2, 3, 4],
-//     },
-//     userLevel === 1 && {
-//       type: "collapse",
-//       name: "Company",
-//       key: "company",
-//       icon: <Icon fontSize="small">table_view</Icon>,
-//       route: "/company",
-//       component: Company,
-//       private: true,
-//       rolesAllowed: [1],
-//     },
-//     userLevel === 1 ||
-//       (userLevel === 3 && {
-//         type: "collapse",
-//         name: "Users",
-//         key: "users",
-//         icon: <Icon fontSize="small">table_view</Icon>,
-//         route: "/users",
-//         component: Users,
-//         private: true,
-//         rolesAllowed: [1, 3],
-//       }),
-//     userLevel === 1 && {
-//       type: "collapse",
-//       name: "Billing",
-//       key: "billing",
-//       icon: <Icon fontSize="small">receipt_long</Icon>,
-//       route: "/billing",
-//       component: Billing,
-//       private: true,
-//       rolesAllowed: [1],
-//     },
-//   ].filter(Boolean);
-// };
+const getRoutes = () => {
+  let userLevel = "";
+  useEffect(() => {
+    const getLevel = async () => {
+      const userInfo = await JSON.parse(localStorage?.getItem("userInfo"));
+      userLevel = await userInfo?.userLavel;
+    };
+    getLevel();
+  }, [userLevel]);
+  return [
+    {
+      type: "collapse",
+      name: "Dashboard",
+      key: "dashboard",
+      icon: <Icon fontSize="small">dashboard</Icon>,
+      route: "/dashboard",
+      component: Dashboard,
+      private: true,
+      rolesAllowed: [1, 2, 3, 4],
+    },
+    {
+      type: "collapse",
+      name: "Shipment",
+      key: "shipment",
+      icon: <Icon fontSize="small">table_view</Icon>,
+      route: "/shipment",
+      component: Shipment,
+      private: true,
+      rolesAllowed: [1, 2, 3, 4],
+    },
+    userLevel === 1 && {
+      type: "collapse",
+      name: "Company",
+      key: "company",
+      icon: <Icon fontSize="small">table_view</Icon>,
+      route: "/company",
+      component: Company,
+      private: true,
+      rolesAllowed: [1],
+    },
+    userLevel === 1 ||
+      (userLevel === 3 && {
+        type: "collapse",
+        name: "Users",
+        key: "users",
+        icon: <Icon fontSize="small">table_view</Icon>,
+        route: "/users",
+        component: Users,
+        private: true,
+        rolesAllowed: [1, 3],
+      }),
+    userLevel === 1 && {
+      type: "collapse",
+      name: "Billing",
+      key: "billing",
+      icon: <Icon fontSize="small">receipt_long</Icon>,
+      route: "/billing",
+      component: Billing,
+      private: true,
+      rolesAllowed: [1],
+    },
+  ].filter(Boolean);
+};
+console.log("getRoutes:", getRoutes);
 
 //const routes = getRoutes();
 

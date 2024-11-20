@@ -15,6 +15,7 @@ import {
   Button,
   Autocomplete,
   Icon,
+  CircularProgress,
 } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -135,17 +136,18 @@ export default function Data() {
 
       reader.onloadend = () => {
         const base64Image = reader.result; // Base64 representation of the image
-
+        console.log("baseImage:", base64Image);
         const img = new Image();
         img.src = base64Image;
 
         img.onload = () => {
-          const doc = new jsPDF("portrait", "pt", "a4"); // A4 size in portrait mode
+          const doc = new jsPDF("landscape", "pt", "a5"); // A4 size in portrait mode
           const pageWidth = doc.internal.pageSize.getWidth();
           const pageHeight = doc.internal.pageSize.getHeight();
 
           // Rotate the image and fit it to full A4 page
-          doc.addImage(base64Image, "JPEG", 0, 0, pageWidth, pageHeight, undefined, "FAST");
+          //doc.addImage(base64Image, "JPEG",2, 545, 440, 292);
+          doc.addImage(base64Image, "JPEG", 3, 125, 440, 292);
 
           // Convert the generated PDF to Base64
           const pdfBase64Data = doc.output("datauristring");
@@ -344,8 +346,8 @@ export default function Data() {
     { Header: "length", accessor: "length", align: "left" },
     { Header: "width", accessor: "width", align: "center" },
     { Header: "height", accessor: "height", align: "center" },
-    { Header: "currency", accessor: "currency", align: "center" },
-    { Header: "total", accessor: "total", align: "left" },
+    // { Header: "currency", accessor: "currency", align: "center" },
+    // { Header: "total", accessor: "total", align: "left" },
     { Header: "recipient", accessor: "recipient", align: "left" },
     { Header: "ship-To", accessor: "shipTo", align: "center" },
     { Header: "shipDate", accessor: "shipDate", align: "left" },
@@ -419,13 +421,20 @@ export default function Data() {
           </form>
         </CardContent>
         <MDBox>
-          <DataTable
-            table={{ columns, rows }}
-            isSorted={false}
-            entriesPerPage={false}
-            showTotalEntries={false}
-            noEndBorder
-          />
+          {shipInfo?.length > 0 ? (
+            <DataTable
+              table={{ columns, rows }}
+              isSorted={false}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+          ) : (
+            
+              <Grid item sx={12} style={{justifyContent:"center"}}>
+                <CircularProgress />
+              </Grid>
+          )}
         </MDBox>
       </Card>
       <Dialog open={open} onClose={handleClose}>
@@ -464,8 +473,8 @@ export default function Data() {
           style={{
             position: "fixed",
             top: 0,
-            left: 0,
-            width: "100vw",
+            left: 550,
+            width: "50vw",
             height: "100vh",
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             display: "flex",
@@ -475,8 +484,8 @@ export default function Data() {
         >
           <div
             style={{
-              width: "80%",
-              height: "80%",
+              width: "100%",
+              height: "100%",
               backgroundColor: "white",
               position: "relative",
               borderRadius: "8px",

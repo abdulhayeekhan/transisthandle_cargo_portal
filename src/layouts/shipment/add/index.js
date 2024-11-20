@@ -31,7 +31,7 @@ function ShippingForm() {
 
   const [stateValue, setStateValue] = useState(null);
   const [countryValue, setCountryValue] = useState(null);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("dumy@email.com");
 
   const [countryId, setCountryId] = useState("");
   const [countryList, setCountryList] = useState([]);
@@ -98,6 +98,7 @@ function ShippingForm() {
     setDeclaration(newRows);
   };
   // ShipmentRequest?.Request?.TransactionReference?.CustomerContext
+  //ShipmentRequest.Shipment.ShipTo.Address.AddressLine[0];
   const [shipmentInfo, setShipmentInfo] = useState({
     ShipmentRequest: {
       Request: {
@@ -231,6 +232,49 @@ function ShippingForm() {
     GetCountryies();
     GetCompanyInformation();
   }, [countryId, shipStateCode, shipCountryCode]);
+
+  // const handleAddress = async (index,address) =>{
+  //   setShipmentInfo((prevInfo) => ({
+  //     ...prevInfo,
+  //     ShipmentRequest: {
+  //       ...prevInfo.ShipmentRequest,
+  //       Shipment: {
+  //         ...prevInfo.ShipmentRequest.Shipment,
+  //         ShipTo: {
+  //           ...prevInfo.ShipmentRequest.Shipment.ShipTo,
+  //           Address: {
+  //             ...prevInfo.ShipmentRequest.Shipment.ShipTo.Address,
+  //             AddressLine[index]: address,
+  //           },
+  //         },
+  //       },
+  //     },
+  //   }));
+  // }
+
+  const handleAddress = async (index, address) => {
+    setShipmentInfo((prevInfo) => {
+      const updatedAddressLine = [...prevInfo.ShipmentRequest.Shipment.ShipTo.Address.AddressLine]; // Copy the AddressLine array
+      updatedAddressLine[index] = address; // Update the specific index
+
+      return {
+        ...prevInfo,
+        ShipmentRequest: {
+          ...prevInfo.ShipmentRequest,
+          Shipment: {
+            ...prevInfo.ShipmentRequest.Shipment,
+            ShipTo: {
+              ...prevInfo.ShipmentRequest.Shipment.ShipTo,
+              Address: {
+                ...prevInfo.ShipmentRequest.Shipment.ShipTo.Address,
+                AddressLine: updatedAddressLine, // Set the updated array
+              },
+            },
+          },
+        },
+      };
+    });
+  };
 
   const handleCountryChange = async (event, newValue) => {
     if (newValue !== null) {
@@ -373,7 +417,7 @@ function ShippingForm() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Name"
+                label="Consignee"
                 onChange={(e) =>
                   handleInputChange("ShipmentRequest.Shipment.ShipTo.AttentionName", e.target.value)
                 }
@@ -393,18 +437,26 @@ function ShippingForm() {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid display="flex" item xs={12} gap={2} sm={6}>
               <TextField
-                label="Contact"
-                onChange={(e) =>
-                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Phone.Number", e.target.value)
-                }
-                fullWidth
-                required
+                label="Address Line 1"
                 size="small"
+                required
+                onChange={(e) => handleAddress(0, e.target.value)}
+                fullWidth
               />
+              {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid display="flex" item xs={12} gap={2} sm={6}>
+              <TextField
+                label="Address Line 2"
+                size="small"
+                onChange={(e) => handleAddress(1, e.target.value)}
+                fullWidth
+              />
+              {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
+            </Grid>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 label="Email"
                 value={email}
@@ -413,21 +465,7 @@ function ShippingForm() {
                 required
                 size="small"
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="Customer Reference"
-                onChange={(e) =>
-                  handleInputChange(
-                    "ShipmentRequest?.Request?.TransactionReference?.CustomerContext",
-                    e.target.value
-                  )
-                }
-                fullWidth
-                size="small"
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} />
+            </Grid> */}
             <Grid item xs={12} sm={6}>
               <Autocomplete
                 fullWidth
@@ -443,44 +481,11 @@ function ShippingForm() {
                     size="small"
                     required
                     {...params}
-                    label="State"
+                    label="Country/Territory"
                   />
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Autocomplete
-                fullWidth
-                name="creditAccountId"
-                size="small"
-                options={stateList}
-                value={stateValue} // Bind the selected value (object with `id`, `label`, `code`)
-                onChange={handleStateChange}
-                getOptionLabel={(option) => `${option.state}`} // Combine `label` and `code` for display
-                renderInput={(params) => (
-                  <TextField
-                    name="creditAccountId"
-                    size="small"
-                    required
-                    {...params}
-                    label="State"
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6}>
-              <TextField
-                label="City"
-                fullWidth
-                size="small"
-                required
-                onChange={(e) =>
-                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Address.City", e.target.value)
-                }
-              />
-            </Grid>
-
             <Grid item xs={12} sm={6}>
               <TextField
                 size="small"
@@ -495,20 +500,57 @@ function ShippingForm() {
                 fullWidth
               />
             </Grid>
-            <Grid display="flex" item xs={12} gap={2} sm={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
-                label="Address Line 1 *"
+                label="City"
+                fullWidth
                 size="small"
                 required
                 onChange={(e) =>
-                  handleInputChange(
-                    "ShipmentRequest.Shipment.ShipTo.Address.AddressLine",
-                    e.target.value
-                  )
+                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Address.City", e.target.value)
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Autocomplete
+                fullWidth
+                name="creditAccountId"
+                size="small"
+                options={stateList}
+                value={stateValue} // Bind the selected value (object with `id`, `label`, `code`)
+                onChange={handleStateChange}
+                getOptionLabel={(option) => `${option.state} (${option.code})`} // Combine `label` and `code` for display
+                renderInput={(params) => (
+                  <TextField
+                    name="creditAccountId"
+                    size="small"
+                    required
+                    {...params}
+                    label="State"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Contact"
+                onChange={(e) =>
+                  handleInputChange("ShipmentRequest.Shipment.ShipTo.Phone.Number", e.target.value)
                 }
                 fullWidth
+                required
+                size="small"
               />
-              {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Customer Reference"
+                onChange={(e) =>
+                  handleInputChange("ShipmentRequest.Shipment.Description", e.target.value)
+                }
+                fullWidth
+                size="small"
+              />
             </Grid>
             <Grid item xs={12} sm={6}></Grid>
 
