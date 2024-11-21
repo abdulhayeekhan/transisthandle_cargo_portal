@@ -69,15 +69,15 @@ export default function Data() {
       doc.text("Country: Germany", 10, 70);
 
       // Receiver details
-      doc.text("SHIP TO:", 105, 30);
-      doc.text(`Consignee Name: ${response?.name}`, 105, 40);
+      doc.text("SHIP TO:", 85, 30);
+      doc.text(`Consignee Name: ${response?.name}`, 85, 40);
       doc.text(
         `Address: ${response?.address}, ${response?.city}, ${response?.stateCode} ${response?.postalCode} ${response?.countryCode}`,
-        105,
+        85,
         50
       );
-      doc.text(`Phone: ${response?.contactNo}`, 105, 60);
-      doc.text(`Country: ${response?.countryCode}`, 105, 70);
+      doc.text(`Phone: ${response?.contactNo}`, 85, 60);
+      doc.text(`Country: ${response?.countryCode}`, 85, 70);
 
       // Invoice details
       doc.text(`Invoice No: ${response?.invoiceId}`, 10, 90);
@@ -430,10 +430,9 @@ export default function Data() {
               noEndBorder
             />
           ) : (
-            
-              <Grid item sx={12} style={{justifyContent:"center"}}>
-                <CircularProgress />
-              </Grid>
+            <Grid item sx={12} style={{ justifyContent: "center" }}>
+              <CircularProgress />
+            </Grid>
           )}
         </MDBox>
       </Card>

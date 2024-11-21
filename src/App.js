@@ -40,6 +40,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logowhite.png";
 import brandDark from "assets/images/logo-cargo.png";
 import AddShipment from "layouts/shipment/add";
+import AddMultiShip from "layouts/shipment/add-multi";
 import SignIn from "layouts/authentication/sign-in";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -192,6 +193,7 @@ export default function App() {
           <Route path="/add-shipment" element={<PrivateRoute element={AddShipment} />} />
           <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />
           <Route path="/add-user" element={<PrivateRoute element={AddUser} />} />
+          <Route path="/add-multi" element={<PrivateRoute element={AddMultiShip} />} />
           <Route path="/get-shipment-rate" element={<PrivateRoute element={ShipmentRate} />} />
           <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />
         </Routes>
