@@ -1,7 +1,3 @@
-/* eslint-disable */
-/* eslint-disable */
-
-// Material Dashboard 2 React components
 import {
   Grid,
   Dialog,
@@ -17,6 +13,7 @@ import {
   Icon,
   CircularProgress,
 } from "@mui/material";
+import * as XLSX from "xlsx";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
@@ -29,6 +26,7 @@ import team4 from "assets/images/team-4.jpg";
 import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
+import "jspdf-barcode";
 import "jspdf-autotable";
 
 import {
@@ -47,6 +45,7 @@ const baseURL = process.env.REACT_APP_API_URL;
 export default function Data() {
   const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
   const userLavelId = userInfo?.userLavel;
+  let token = localStorage.getItem("token");
   console.log("userInfo", userInfo);
 
   const handleDownloadInvoice = async (id) => {
@@ -58,30 +57,57 @@ export default function Data() {
 
       // Add title
       doc.setFontSize(16);
+      doc.setFont("helvetica", "bold");
       doc.text("INVOICE", 105, 20, { align: "center" });
+      doc.setFont("helvetica", "normal");
 
       // Sender details
       doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
       doc.text("SENT BY:", 10, 30);
-      doc.text("Sender Name: ESCM GMBH", 10, 40);
-      doc.text("Address: Koln, Germany 50829", 10, 50);
-      doc.text("Phone: 0049-15202446893", 10, 60);
-      doc.text("Country: Germany", 10, 70);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("SENDER:", 10, 40);
+      doc.setFont("helvetica", "normal");
+      doc.text("ESCM GMBH", 35, 40);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("ADDRESS:", 10, 48);
+      doc.setFont("helvetica", "normal");
+      doc.text("Koln, Germany 50829", 35, 48);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("PHONE:", 10, 56);
+      doc.setFont("helvetica", "normal");
+      doc.text("0049-15202446893", 35, 56);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("COUNTRY:", 10, 64);
+      doc.setFont("helvetica", "normal");
+      doc.text("Germany", 35, 64);
 
       // Receiver details
       doc.text("SHIP TO:", 85, 30);
-      doc.text(`Consignee Name: ${response?.name}`, 85, 40);
+      doc.text(`CONSIGNEE: ${response?.name}`, 85, 40);
+      doc.text(`ADDRESS: ${response?.address}`, 85, 48);
       doc.text(
-        `Address: ${response?.address}, ${response?.city}, ${response?.stateCode} ${response?.postalCode} ${response?.countryCode}`,
-        85,
-        50
+        `${response?.city}, ${response?.stateCode} ${response?.postalCode} ${response?.countryCode}`,
+        92,
+        56
       );
-      doc.text(`Phone: ${response?.contactNo}`, 85, 60);
-      doc.text(`Country: ${response?.countryCode}`, 85, 70);
+      doc.text(`PHONE: ${response?.contactNo}`, 85, 64);
+      doc.text(`COUNTRY: ${response?.countryCode}`, 85, 72);
 
       // Invoice details
-      doc.text(`Invoice No: ${response?.invoiceId}`, 10, 90);
-      doc.text(`Tracking No: ${response?.trackingNo}`, 10, 100);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Invoice No:`, 10, 90);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${response?.invoiceId}`, 35, 90);
+
+      doc.setFont("helvetica", "bold");
+      doc.text(`Tracking No:`, 85, 90);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${response?.trackingNo}`, 120, 90);
 
       // Table for products
       const tableColumn = ["Description", "Hts Code", "Qty", "Unit Price", "Total Price"];
@@ -96,7 +122,7 @@ export default function Data() {
       doc.autoTable({
         head: [tableColumn],
         body: tableRows,
-        startY: 110,
+        startY: 100,
       });
 
       const totalPrice = response?.details?.reduce(
@@ -105,11 +131,19 @@ export default function Data() {
       );
       // Total Amount
       doc.setFontSize(12);
-      doc.text(`Total: ${totalPrice}`, 10, doc.lastAutoTable.finalY + 20);
+      doc.text(`Total: ${totalPrice} $`, 10, doc.lastAutoTable.finalY + 10);
 
       // Footer
-      doc.text("NAME: ESCM GMBH", 10, doc.lastAutoTable.finalY + 40);
-      doc.text("SIGNATURE", 10, doc.lastAutoTable.finalY + 50);
+      doc.text("NAME: ESCM GMBH", 10, doc.lastAutoTable.finalY + 20);
+      doc.text("SIGNATURE: __________________________", 109, doc.lastAutoTable.finalY + 20);
+
+      // doc.barcode(response?.trackingNo, {
+      //   x: 10,
+      //   y: 110,
+      //   width: 50,
+      //   height: 5,
+      //   type: "CODE128",
+      // });
 
       // Save PDF
       doc.save(`${response?.trackingNo}.pdf`);
@@ -121,50 +155,157 @@ export default function Data() {
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pdfBase64, setPdfBase64] = useState("");
+  // const convertImageToPdfBase64 = async (id) => {
+  //   const data = await axios.get(`${baseURL}/shipment/label/${id}`);
+  //   const imageData = await data?.data?.graphicImage;
+  //   const base64Image = `data:image/png;base64,${imageData}`;
+  //   const imageUrl = base64Image;
+
+  //   try {
+  //     // Fetch image and convert it to a Base64 URL
+  //     const imageResponse = await fetch(imageUrl);
+  //     const imageBlob = await imageResponse.blob();
+  //     const reader = new FileReader();
+
+  //     reader.onloadend = () => {
+  //       const base64Image = reader.result;
+  //       const img = new Image();
+  //       img.src = base64Image;
+
+  //       img.onload = () => {
+  //         const canvas = document.createElement("canvas");
+  //         const ctx = canvas.getContext("2d");
+  //         canvas.width = img.height;
+  //         canvas.height = img.width;
+  //         ctx.translate(canvas.width / 2, canvas.height / 2);
+  //         ctx.rotate((90 * Math.PI) / 180); // 90 degrees rotation
+  //         ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+  //         // Get the rotated image as base64
+  //         const rotatedBase64 = canvas.toDataURL("image/jpeg");
+  //         const doc = new jsPDF({
+  //           orientation: "portrait", // Portrait mode
+  //           unit: "pt", // Points as unit
+  //           format: [288, 432], // Custom dimensions: 4 inches wide, 6 inches long
+  //         });
+
+  //         const pageWidth = doc.internal.pageSize.getWidth();
+  //         const pageHeight = doc.internal.pageSize.getHeight();
+
+  //         // Adjust the image dimensions to maintain aspect ratio
+  //         const imgAspectRatio = img.width / img.height;
+  //         let imgWidth = pageWidth - 20; // Leave some margin
+  //         let imgHeight = imgWidth / imgAspectRatio;
+
+  //         // If the calculated height exceeds page height, adjust dimensions
+  //         if (imgHeight > pageHeight - 20) {
+  //           imgHeight = pageHeight - 20; // Leave some margin
+  //           imgWidth = imgHeight * imgAspectRatio;
+  //         }
+
+  //         // Center the image on the page
+  //         const xOffset = (pageWidth - imgWidth) / 2;
+  //         const yOffset = (pageHeight - imgHeight) / 2;
+  //         // Rotate the image and fit it to full A4 page
+  //         //doc.addImage(base64Image, "JPEG",2, 545, 440, 292);
+  //         doc.addImage(rotatedBase64, "JPEG", 0, 0, 288, 432);
+
+  //         // Convert the generated PDF to Base64
+  //         const pdfBase64Data = doc.output("datauristring");
+  //         setPdfBase64(pdfBase64Data);
+  //         setIsModalOpen(true); // Open modal
+  //       };
+  //     };
+
+  //     reader.readAsDataURL(imageBlob);
+  //   } catch (error) {
+  //     console.error("Error converting image to PDF:", error);
+  //   }
+  // };
+
   const convertImageToPdfBase64 = async (id) => {
-    //const data = await axios.get(`${baseURL}/shipment/label/${id}`);
-    const data = await axios.get(`${baseURL}/shipment/label/${id}`);
-    const imageData = await data?.data?.graphicImage;
-    const base64Image = `data:image/png;base64,${imageData}`; // Replace with your Base64 data
-    const imageUrl = base64Image; // Replace with your image path or URL
-
     try {
-      // Fetch image and convert it to a Base64 URL
-      const imageResponse = await fetch(imageUrl);
-      const imageBlob = await imageResponse.blob();
-      const reader = new FileReader();
+      const doc = new jsPDF({
+        orientation: "portrait", // Portrait mode
+        unit: "pt", // Points as unit
+        format: [288, 432], // Custom dimensions: 4 inches wide, 6 inches long
+      });
 
-      reader.onloadend = () => {
-        const base64Image = reader.result; // Base64 representation of the image
-        console.log("baseImage:", base64Image);
-        const img = new Image();
-        img.src = base64Image;
+      const data = await axios.get(`${baseURL}/shipment/label/${id}`);
+      console.log("data?.data?.", data?.data);
+      if (Array.isArray(data?.data)) {
+        for (const item of data.data) {
+          const imageData = await item.graphicImage;
+          if (!imageData) continue;
+          const base64Image = `data:image/png;base64,${imageData}`;
+          const imageUrl = base64Image;
 
-        img.onload = () => {
-          const doc = new jsPDF("landscape", "pt", "a5"); // A4 size in portrait mode
-          const pageWidth = doc.internal.pageSize.getWidth();
-          const pageHeight = doc.internal.pageSize.getHeight();
+          // Fetch image and convert it to a Base64 URL
+          const imageResponse = await fetch(imageUrl);
+          const imageBlob = await imageResponse.blob();
+          const reader = new FileReader();
 
-          // Rotate the image and fit it to full A4 page
-          //doc.addImage(base64Image, "JPEG",2, 545, 440, 292);
-          doc.addImage(base64Image, "JPEG", 3, 125, 440, 292);
+          await new Promise((resolve) => {
+            reader.onloadend = () => {
+              const img = new Image();
+              img.src = reader.result;
 
-          // Convert the generated PDF to Base64
-          const pdfBase64Data = doc.output("datauristring");
-          setPdfBase64(pdfBase64Data);
-          setIsModalOpen(true); // Open modal
-        };
-      };
+              img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
 
-      reader.readAsDataURL(imageBlob);
+                canvas.width = img.height;
+                canvas.height = img.width;
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((90 * Math.PI) / 180); // Rotate 90 degrees
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+                const rotatedBase64 = canvas.toDataURL("image/jpeg");
+
+                // Add the rotated image to the PDF
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                // Maintain aspect ratio
+                const imgAspectRatio = img.width / img.height;
+                let imgWidth = pageWidth - 20; // Leave some margin
+                let imgHeight = imgWidth / imgAspectRatio;
+
+                if (imgHeight > pageHeight - 20) {
+                  imgHeight = pageHeight - 20;
+                  imgWidth = imgHeight * imgAspectRatio;
+                }
+
+                const xOffset = (pageWidth - imgWidth) / 2;
+                const yOffset = (pageHeight - imgHeight) / 2;
+
+                doc.addImage(rotatedBase64, "JPEG", 0, 0, 288, 432);
+
+                // Add a new page if not the last image
+                if (item !== data.data[data.data.length - 1]) {
+                  doc.addPage();
+                }
+
+                resolve();
+              };
+            };
+
+            reader.readAsDataURL(imageBlob);
+          });
+        }
+      }
+
+      // Convert the generated PDF to Base64
+      const pdfBase64Data = doc.output("datauristring");
+      setPdfBase64(pdfBase64Data);
+      setIsModalOpen(true); // Open modal
     } catch (error) {
-      console.error("Error converting image to PDF:", error);
+      console.error("Error generating PDF:", error);
     }
   };
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const today = new Date();
+  let today = new Date();
   const last7Days = new Date(today);
   last7Days.setDate(today.getDate() - 7);
   const nextDay = new Date(today);
@@ -226,12 +367,6 @@ export default function Data() {
         Authorization: token, // Replace 'yourToken' with your actual token
       },
     });
-    // const errorCode = data?.data?.trackResponse.shipment[0]?.warnings[0]?.code; //shipment[0]?.warnings[0]?.code
-    // console.log("handleTracking:", data?.data?.trackResponse);
-    // const errorMessage = data?.data?.trackResponse.shipment[0]?.warnings[0]?.message;
-    // if (errorCode === "TW0001") {
-    //   setTrackingStatus([{ ...trackingStatus, date: "", status: errorMessage, location: "" }]);
-    // } else {
     const statusData = data?.data?.trackResponse?.shipment[0]?.package[0]?.activity;
     const selectedData = statusData.map((item) => ({
       date: item.date,
@@ -244,6 +379,38 @@ export default function Data() {
     //     toast.error(""+error);
     // }
   };
+  const exportRows = shipInfo?.map((user) => ({
+    client: user.companyName,
+    tracking: user.trackingNo,
+    invoiceNo: user.invoiceNo,
+    carrierCode: user?.carrierCode,
+    weight: user.weight + " (" + user.weightUnit + ")",
+    length: user?.lenght,
+    width: user?.width,
+    height: user?.height,
+    recipient: user?.name,
+    shipTo: user?.address + ", " + user?.city + " " + user?.postalCode + ", " + user?.countryCode,
+    shipDate: user?.shipDate,
+    createdAt: user.createdAt,
+    refund: user.refund,
+  }));
+  const exportCoulmns = [
+    { Header: "Client", accessor: "client", width: "10%", align: "left" },
+    { Header: "tracking", accessor: "tracking", align: "left" },
+    { Header: "invoice#", accessor: "invoiceNo", align: "center" },
+    { Header: "carrierCode", accessor: "carrierCode", align: "center" },
+    { Header: "weight", accessor: "weight", align: "left" },
+    { Header: "length", accessor: "length", align: "left" },
+    { Header: "width", accessor: "width", align: "center" },
+    { Header: "height", accessor: "height", align: "center" },
+    // { Header: "currency", accessor: "currency", align: "center" },
+    // { Header: "total", accessor: "total", align: "left" },
+    { Header: "recipient", accessor: "recipient", align: "left" },
+    { Header: "ship-To", accessor: "shipTo", align: "center" },
+    { Header: "shipDate", accessor: "shipDate", align: "left" },
+    { Header: "createdAt", accessor: "createdAt", align: "left" },
+    { Header: "refund", accessor: "refund", align: "center" },
+  ];
   const rows = shipInfo.map((user) => ({
     company: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -354,6 +521,26 @@ export default function Data() {
     { Header: "createdAt", accessor: "createdAt", align: "left" },
     { Header: "refund", accessor: "refund", align: "center" },
   ];
+
+  const handleExport = async () => {
+    const exportData = await exportRows.map((row) => {
+      const result = {};
+      exportCoulmns.forEach((column) => {
+        result[column.Header] = row[column.accessor];
+      });
+      return result;
+    });
+
+    // Create a new workbook and worksheet
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+    // Export to Excel
+    XLSX.writeFile(workbook, `shipments-${today}.xlsx`);
+  };
   return (
     <div>
       <Card>
@@ -392,15 +579,16 @@ export default function Data() {
                   margin="normal"
                 />
               </Grid>
-              <Grid item xs={6} md={2}>
+              {/* <Grid item xs={6} md={2}>
                 <TextField label="Search Invoice No" variant="outlined" fullWidth margin="normal" />
-              </Grid>
+              </Grid> */}
               {(userLavelId === 1 || userLavelId === 2) && (
                 <Grid item xs={6} md={2}>
                   <Autocomplete
                     fullWidth
                     name="creditAccountId"
                     size="medium"
+                    style={{ padding: 5, marginTop: 10 }}
                     options={companyList}
                     value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
                     onChange={handleCompanyChange}
@@ -417,6 +605,14 @@ export default function Data() {
                   />
                 </Grid>
               )}
+              <Grid item xs={6} md={2}>
+                <Button
+                  onClick={handleExport}
+                  style={{ backgroundColor: "#52aa55", color: "white", marginTop: 13 }}
+                >
+                  Export Excel
+                </Button>
+              </Grid>
             </Grid>
           </form>
         </CardContent>
