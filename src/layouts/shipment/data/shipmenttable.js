@@ -419,7 +419,7 @@ export default function Data() {
     ),
     label: (
       <Typography
-        onClick={(e) => convertImageToPdfBase64(user.trackingNo)}
+        onClick={(e) => convertImageToPdfBase64(user.invoiceNo)}
         style={{ fontSize: 14, fontWeight: "500", color: "#cf640b", cursor: "pointer" }}
       >
         <Icon>print</Icon>
