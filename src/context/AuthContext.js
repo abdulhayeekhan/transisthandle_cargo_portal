@@ -12,6 +12,9 @@ export const AuthProvider = ({ children }) => {
   const [userLevel, setUserLevel] = useState("");
   const navigate = useNavigate();
 
+  var hours = 1;
+  var now = new Date().getTime();
+
   const login = async (email, password) => {
     try {
       // Send login request to the server
@@ -26,6 +29,7 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
           console.log("response?.data?.data?.userLavel", response?.data?.data?.userLavel);
           setUserLevel(response?.data?.data?.userLavel);
+          localStorage.setItem("setupTime", now);
           navigate("/dashboard");
         })
         .catch((err) => {
@@ -57,20 +61,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  var setupTime = localStorage.getItem("setupTime");
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userInfo");
+    localStorage.removeItem("setupTime");
     setIsAuthenticated(false);
   };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
-    console.log("token", token);
     if (userInfo !== null) {
       setIsAuthenticated(true);
       setUserLevel(userInfo?.userLavel);
       navigate("/dashboard");
+    }
+    if (now - setupTime > hours * 60 * 60 * 1000) {
+      logout();
     }
   }, []);
 

@@ -384,7 +384,7 @@ export default function Data() {
     tracking: user.trackingNo,
     invoiceNo: user.invoiceNo,
     carrierCode: user?.carrierCode,
-    weight: user.weight + " (" + user.weightUnit + ")",
+    weight: user.weight,
     length: user?.lenght,
     width: user?.width,
     height: user?.height,
