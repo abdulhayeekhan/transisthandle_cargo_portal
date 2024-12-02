@@ -28,6 +28,7 @@ function Shipment() {
   //const { columns, rows } = shipmentTableData();
   const navigate = useNavigate();
   const handleTracking = (e) => {};
+  console.log("token:", localStorage.getItem("token"));
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
