@@ -97,6 +97,38 @@ function ShippingForm() {
     );
     setDeclaration(newRows);
   };
+
+  function generateUniqueKey() {
+    const prefix = "THC"; // Optional prefix
+    const getRandomDigit = () => Math.floor(Math.random() * 10); // Random digit between 0-9
+    const getRandomLetter = () => String.fromCharCode(Math.floor(Math.random() * 26) + 65); // Random letter (A-Z)
+
+    // Generate 8 random characters (letters + digits)
+    let randomString = "";
+    for (let i = 0; i < 8; i++) {
+      if (i % 2 === 0) {
+        randomString += getRandomLetter(); // Add a random letter
+      } else {
+        randomString += getRandomDigit(); // Add a random digit
+      }
+    }
+
+    const CustomerContextKey = prefix + "-" + randomString.toUpperCase(); // Combine prefix and the random string
+
+    setShipmentInfo((prevState) => ({
+      ...prevState,
+      ShipmentRequest: {
+        ...prevState.ShipmentRequest,
+        Request: {
+          ...prevState.ShipmentRequest.Request,
+          TransactionReference: {
+            ...prevState.ShipmentRequest.Request.TransactionReference,
+            CustomerContext: CustomerContextKey, // Update the CustomerContext here
+          },
+        },
+      },
+    }));
+  }
   // ShipmentRequest?.Request?.TransactionReference?.CustomerContext
   //ShipmentRequest.Shipment.ShipTo.Address.AddressLine[0];
   const [shipmentInfo, setShipmentInfo] = useState({
@@ -231,6 +263,7 @@ function ShippingForm() {
   useEffect(() => {
     GetCountryies();
     GetCompanyInformation();
+    generateUniqueKey();
   }, [countryId, shipStateCode, shipCountryCode]);
 
   // const handleAddress = async (index,address) =>{
