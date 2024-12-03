@@ -380,6 +380,62 @@ export default function Data() {
             reader.readAsDataURL(imageBlob);
           });
         }
+      } else {
+        const imageData = await data?.data?.LabelImage?.GraphicImage;
+        const base64Image = `data:image/png;base64,${imageData}`;
+        const imageUrl = base64Image;
+        // Fetch image and convert it to a Base64 URL
+        const imageResponse = await fetch(imageUrl);
+        const imageBlob = await imageResponse.blob();
+        const reader = new FileReader();
+
+        await new Promise((resolve) => {
+          reader.onloadend = () => {
+            const img = new Image();
+            img.src = reader.result;
+
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
+
+              canvas.width = img.height;
+              canvas.height = img.width;
+              ctx.translate(canvas.width / 2, canvas.height / 2);
+              ctx.rotate((90 * Math.PI) / 180); // Rotate 90 degrees
+              ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+              const rotatedBase64 = canvas.toDataURL("image/jpeg");
+
+              // Add the rotated image to the PDF
+              const pageWidth = doc.internal.pageSize.getWidth();
+              const pageHeight = doc.internal.pageSize.getHeight();
+
+              // Maintain aspect ratio
+              const imgAspectRatio = img.width / img.height;
+              let imgWidth = pageWidth - 20; // Leave some margin
+              let imgHeight = imgWidth / imgAspectRatio;
+
+              if (imgHeight > pageHeight - 20) {
+                imgHeight = pageHeight - 20;
+                imgWidth = imgHeight * imgAspectRatio;
+              }
+
+              const xOffset = (pageWidth - imgWidth) / 2;
+              const yOffset = (pageHeight - imgHeight) / 2;
+
+              doc.addImage(rotatedBase64, "JPEG", 0, 0, 288, 432);
+
+              // Add a new page if not the last image
+              // if (item !== data.data[data.data.length - 1]) {
+              //   doc.addPage();
+              // }
+
+              resolve();
+            };
+          };
+
+          reader.readAsDataURL(imageBlob);
+        });
       }
 
       // Convert the generated PDF to Base64
@@ -467,6 +523,7 @@ export default function Data() {
     //     toast.error(""+error);
     // }
   };
+  //Customer Reference
   const exportRows = shipInfo?.map((user) => ({
     client: user.companyName,
     tracking: user.trackingNo,
@@ -478,6 +535,7 @@ export default function Data() {
     height: user?.height,
     recipient: user?.name,
     shipTo: user?.address + ", " + user?.city + " " + user?.postalCode + ", " + user?.countryCode,
+    CustReference: user?.customerReference,
     shipDate: user?.shipDate,
     createdAt: user.createdAt,
     refund: user.refund,
@@ -495,6 +553,7 @@ export default function Data() {
     // { Header: "total", accessor: "total", align: "left" },
     { Header: "recipient", accessor: "recipient", align: "left" },
     { Header: "ship-To", accessor: "shipTo", align: "center" },
+    { Header: "CustReference", accessor: "CustReference", align: "left" },
     { Header: "shipDate", accessor: "shipDate", align: "left" },
     { Header: "createdAt", accessor: "createdAt", align: "left" },
     { Header: "refund", accessor: "refund", align: "center" },
@@ -574,6 +633,11 @@ export default function Data() {
         {user.address}, {user.city} {user.postalCode}, {user.countryCode}
       </MDTypography>
     ),
+    customerReference: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {user?.customerReference}
+      </MDTypography>
+    ),
     shipDate: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {user.shipDate}
@@ -605,6 +669,7 @@ export default function Data() {
     // { Header: "total", accessor: "total", align: "left" },
     { Header: "recipient", accessor: "recipient", align: "left" },
     { Header: "ship-To", accessor: "shipTo", align: "center" },
+    { Header: "Customer-Reference", accessor: "customerReference", align: "left" },
     { Header: "shipDate", accessor: "shipDate", align: "left" },
     { Header: "createdAt", accessor: "createdAt", align: "left" },
     { Header: "refund", accessor: "refund", align: "center" },
