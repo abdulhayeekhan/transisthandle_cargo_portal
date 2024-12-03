@@ -534,7 +534,19 @@ function ShippingMultiShip() {
         toast.success("create successully");
       })
       .catch((error) => {
-        toast.error("" + error);
+        if (error.response) {
+          // Extract error information
+          console.log("error.response", error.response?.data?.error);
+          const errorCode = error.response.headers.apierrorcode || error.response.data.errorcode;
+          const errorMessage =
+            error.response.headers.apierrormsg || error.response.data.errordescription;
+          const res = error.response?.data?.error;
+          // Display the error
+          toast.error(`${res}`);
+        } else {
+          // Fallback for other error types
+          toast.error("An unexpected error occurred.");
+        }
         setSaveButton(false);
       });
     e.preventDefault();

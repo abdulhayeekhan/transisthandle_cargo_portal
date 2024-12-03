@@ -223,87 +223,6 @@ export default function Data() {
   //   }
   // };
 
-  const convertImageToPdfBase64 = async (id) => {
-    try {
-      const doc = new jsPDF({
-        orientation: "portrait", // Portrait mode
-        unit: "pt", // Points as unit
-        format: [288, 432], // Custom dimensions: 4 inches wide, 6 inches long
-      });
-
-      const data = await axios.get(`${baseURL}/shipment/label/${id}`);
-      console.log("data?.data?.", data?.data);
-      if (Array.isArray(data?.data)) {
-        for (const item of data.data) {
-          const imageData = await item.graphicImage;
-          if (!imageData) continue;
-          const base64Image = `data:image/png;base64,${imageData}`;
-          const imageUrl = base64Image;
-
-          // Fetch image and convert it to a Base64 URL
-          const imageResponse = await fetch(imageUrl);
-          const imageBlob = await imageResponse.blob();
-          const reader = new FileReader();
-
-          await new Promise((resolve) => {
-            reader.onloadend = () => {
-              const img = new Image();
-              img.src = reader.result;
-
-              img.onload = () => {
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
-
-                canvas.width = img.height;
-                canvas.height = img.width;
-                ctx.translate(canvas.width / 2, canvas.height / 2);
-                ctx.rotate((90 * Math.PI) / 180); // Rotate 90 degrees
-                ctx.drawImage(img, -img.width / 2, -img.height / 2);
-
-                const rotatedBase64 = canvas.toDataURL("image/jpeg");
-
-                // Add the rotated image to the PDF
-                const pageWidth = doc.internal.pageSize.getWidth();
-                const pageHeight = doc.internal.pageSize.getHeight();
-
-                // Maintain aspect ratio
-                const imgAspectRatio = img.width / img.height;
-                let imgWidth = pageWidth - 20; // Leave some margin
-                let imgHeight = imgWidth / imgAspectRatio;
-
-                if (imgHeight > pageHeight - 20) {
-                  imgHeight = pageHeight - 20;
-                  imgWidth = imgHeight * imgAspectRatio;
-                }
-
-                const xOffset = (pageWidth - imgWidth) / 2;
-                const yOffset = (pageHeight - imgHeight) / 2;
-
-                doc.addImage(rotatedBase64, "JPEG", 0, 0, 288, 432);
-
-                // Add a new page if not the last image
-                if (item !== data.data[data.data.length - 1]) {
-                  doc.addPage();
-                }
-
-                resolve();
-              };
-            };
-
-            reader.readAsDataURL(imageBlob);
-          });
-        }
-      }
-
-      // Convert the generated PDF to Base64
-      const pdfBase64Data = doc.output("datauristring");
-      setPdfBase64(pdfBase64Data);
-      setIsModalOpen(true); // Open modal
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-    }
-  };
-
   // const convertImageToPdfBase64 = async (id) => {
   //   try {
   //     const doc = new jsPDF({
@@ -312,21 +231,15 @@ export default function Data() {
   //       format: [288, 432], // Custom dimensions: 4 inches wide, 6 inches long
   //     });
 
-  //     const body = {
-  //       trackingNumber: "1ZA70C630406283405",
-  //     };
-  //     const data = await axios.post(`${baseURL}/ups/recover-label`, body, {
-  //       headers: {
-  //         Authorization: token, // Replace 'yourToken' with your actual token
-  //       },
-  //     });
-  //     console.log("response data", data?.data);
+  //     const data = await axios.get(`${baseURL}/shipment/label/${id}`);
+  //     console.log("data?.data?.", data?.data);
   //     if (Array.isArray(data?.data)) {
   //       for (const item of data.data) {
-  //         const imageData = await item?.LabelImage?.GraphicImage;
+  //         const imageData = await item.graphicImage;
   //         if (!imageData) continue;
   //         const base64Image = `data:image/png;base64,${imageData}`;
   //         const imageUrl = base64Image;
+
   //         // Fetch image and convert it to a Base64 URL
   //         const imageResponse = await fetch(imageUrl);
   //         const imageBlob = await imageResponse.blob();
@@ -390,6 +303,94 @@ export default function Data() {
   //     console.error("Error generating PDF:", error);
   //   }
   // };
+
+  const convertImageToPdfBase64 = async (id) => {
+    try {
+      const doc = new jsPDF({
+        orientation: "portrait", // Portrait mode
+        unit: "pt", // Points as unit
+        format: [288, 432], // Custom dimensions: 4 inches wide, 6 inches long
+      });
+
+      const body = {
+        trackingNumber: id,
+      };
+      const data = await axios.post(`${baseURL}/ups/recover-label`, body, {
+        headers: {
+          Authorization: token, // Replace 'yourToken' with your actual token
+        },
+      });
+      console.log("response data", data?.data);
+      if (Array.isArray(data?.data)) {
+        for (const item of data.data) {
+          const imageData = await item?.LabelImage?.GraphicImage;
+          if (!imageData) continue;
+          const base64Image = `data:image/png;base64,${imageData}`;
+          const imageUrl = base64Image;
+          // Fetch image and convert it to a Base64 URL
+          const imageResponse = await fetch(imageUrl);
+          const imageBlob = await imageResponse.blob();
+          const reader = new FileReader();
+
+          await new Promise((resolve) => {
+            reader.onloadend = () => {
+              const img = new Image();
+              img.src = reader.result;
+
+              img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+
+                canvas.width = img.height;
+                canvas.height = img.width;
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((90 * Math.PI) / 180); // Rotate 90 degrees
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
+
+                const rotatedBase64 = canvas.toDataURL("image/jpeg");
+
+                // Add the rotated image to the PDF
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                // Maintain aspect ratio
+                const imgAspectRatio = img.width / img.height;
+                let imgWidth = pageWidth - 20; // Leave some margin
+                let imgHeight = imgWidth / imgAspectRatio;
+
+                if (imgHeight > pageHeight - 20) {
+                  imgHeight = pageHeight - 20;
+                  imgWidth = imgHeight * imgAspectRatio;
+                }
+
+                const xOffset = (pageWidth - imgWidth) / 2;
+                const yOffset = (pageHeight - imgHeight) / 2;
+
+                doc.addImage(rotatedBase64, "JPEG", 0, 0, 288, 432);
+
+                // Add a new page if not the last image
+                if (item !== data.data[data.data.length - 1]) {
+                  doc.addPage();
+                }
+
+                resolve();
+              };
+            };
+
+            reader.readAsDataURL(imageBlob);
+          });
+        }
+      }
+
+      // Convert the generated PDF to Base64
+      const pdfBase64Data = doc.output("datauristring");
+      setPdfBase64(pdfBase64Data);
+      setIsModalOpen(true); // Open modal
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Error generating label");
+    }
+  };
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   let today = new Date();
@@ -506,7 +507,7 @@ export default function Data() {
     ),
     label: (
       <Typography
-        onClick={(e) => convertImageToPdfBase64(user.invoiceNo)}
+        onClick={(e) => convertImageToPdfBase64(user.trackingNo)}
         style={{ fontSize: 14, fontWeight: "500", color: "#cf640b", cursor: "pointer" }}
       >
         <Icon>print</Icon>
