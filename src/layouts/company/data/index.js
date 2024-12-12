@@ -8,6 +8,7 @@ import { Button, Icon, Pagination, Grid, TextField, TablePagination } from "@mui
 import { useDispatch, useSelector } from "react-redux";
 //import DataTable from "components/DataTable"; // Ensure DataTable is correctly imported
 import DataTable from "examples/Tables/DataTable";
+import { Link } from "react-router-dom";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
@@ -106,9 +107,15 @@ export default function Data() {
           </MDTypography>
         ),
         action: (
-          <Button component="a" variant="caption" color="text" fontWeight="medium">
+          <Link
+            to={`/edit-company/${user?.id}`}
+            component="a"
+            variant="caption"
+            color="text"
+            fontWeight="medium"
+          >
             <Icon fontSize="small">edit</Icon>
-          </Button>
+          </Link>
         ),
       }))
     : [];

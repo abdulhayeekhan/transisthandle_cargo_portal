@@ -21,6 +21,32 @@ export const AddNewCompany = createAsyncThunk("addNewAdmission", async (data, { 
   }
 });
 
+export const UpdateCompany = createAsyncThunk("updateCompany", async (data, { dispatch }) => {
+  try {
+    await axios
+      .put(`${baseURL}/company/update`, data)
+      .then((response) => {
+        toast.success("" + response.data?.message);
+        return response.data.data;
+      })
+      .catch((error) => {
+        toast.error("" + error);
+      });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+export const GetCompanyData = createAsyncThunk("getcompanydata", async (id) => {
+  try {
+    const { data } = await axios.get(`${baseURL}/company/getSingle/${id}`);
+    console.log("data:", data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 export const GetCompaniesList = createAsyncThunk("getcompanieslist", async () => {
   try {
     const { data } = await axios.get(`${baseURL}/company/getAll`);
@@ -57,6 +83,19 @@ const CompanySlice = createSlice({
         state.status = false;
       })
 
+      .addCase(UpdateCompany.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(UpdateCompany.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = { ...state.data, ...action.payload };
+        state.status = true;
+      })
+      .addCase(UpdateCompany.rejected, (state, action) => {
+        state.loading = false;
+        state.status = false;
+      })
+
       .addCase(GetCompaniesList.pending, (state) => {
         state.loading = true;
       })
@@ -67,6 +106,20 @@ const CompanySlice = createSlice({
         state.status = true;
       })
       .addCase(GetCompaniesList.rejected, (state, action) => {
+        state.loading = false;
+        state.status = false;
+      })
+
+      .addCase(GetCompanyData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(GetCompanyData.fulfilled, (state, action) => {
+        console.log("action.payload", action.payload);
+        state.loading = false;
+        state.data = action.payload;
+        state.status = true;
+      })
+      .addCase(GetCompanyData.rejected, (state, action) => {
         state.loading = false;
         state.status = false;
       });
