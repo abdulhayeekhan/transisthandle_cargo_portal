@@ -36,12 +36,12 @@ function Shipment() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container>
-              <Grid item xs={12} md={9}>
+              <Grid item xs={12} md={8}>
                 <Typography>
                   You can view, print your shipments label here. (Timezone: America/New York)
                 </Typography>
               </Grid>
-              <Grid display="flex" xs={12} gap={2} item md={3}>
+              <Grid display="flex" xs={12} gap={2} item md={4}>
                 <Button
                   variant="contained"
                   style={{ color: "#fff" }}

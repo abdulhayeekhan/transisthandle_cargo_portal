@@ -12,6 +12,7 @@ import {
   Autocomplete,
   Icon,
   CircularProgress,
+  Pagination,
 } from "@mui/material";
 import * as XLSX from "xlsx";
 import MDBox from "components/MDBox";
@@ -155,6 +156,7 @@ export default function Data() {
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pdfBase64, setPdfBase64] = useState("");
+  const [loading, setLoading] = useState(false);
   // const convertImageToPdfBase64 = async (id) => {
   //   const data = await axios.get(`${baseURL}/shipment/label/${id}`);
   //   const imageData = await data?.data?.graphicImage;
@@ -467,14 +469,22 @@ export default function Data() {
     userLavelId === 1 || userLavelId === 2 ? "" : userInfo?.companyId
   );
   const [shipInfo, setShipInfo] = useState([]);
+  const [shipcompleteData, setShipcompleteData] = useState([]);
   const [companyList, setCompanyList] = useState([]);
   const GetCompanyData = async () => {
     const { data } = await axios.get(`${baseURL}/company/getAllList`);
     setCompanyList(data);
   };
   let information = "";
+  const [pageNo, setPageNo] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState("");
+  const [notfound, setNotFound] = useState("");
   const GetShipmentData = async () => {
+    setLoading(true);
     const body = {
+      pageNo: pageNo,
+      pageSize: pageSize,
       startDate,
       endDate,
       clientCompanyId,
@@ -483,14 +493,36 @@ export default function Data() {
       trackingNo,
     };
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
-    setShipInfo(data);
+    console.log("data response:", data);
+    setTotalPages(data?.totalPages);
+    setShipInfo(data?.data);
+    if (data?.data?.lenght > 0) {
+      setLoading(false);
+      setNotFound("Not Found");
+    } else {
+      setLoading(false);
+      setNotFound("");
+    }
+    const bodyInfo = {
+      pageNo: pageNo,
+      pageSize: 100000000,
+      startDate,
+      endDate,
+      clientCompanyId,
+      createdBy,
+      companyName,
+      trackingNo,
+    };
+
+    const response = await axios.post(`${baseURL}/shipment/getAll`, bodyInfo);
+    setShipcompleteData(response?.data?.data);
   };
   console.log("shipInfo:", shipInfo);
 
   useEffect(() => {
     GetShipmentData();
     GetCompanyData();
-  }, [trackingNo, startDate, endDate, clientCompanyId, userLavelId]);
+  }, [trackingNo, startDate, endDate, clientCompanyId, userLavelId, pageNo, pageSize, totalPages]);
   const [curCompany, setCurCompany] = useState(null);
   const handleCompanyChange = (event, newValue) => {
     if (newValue !== null) {
@@ -524,10 +556,10 @@ export default function Data() {
     // }
   };
   //Customer Reference
-  const exportRows = shipInfo?.map((user) => ({
+  const exportRows = shipcompleteData?.map((user) => ({
     client: user.companyName,
     tracking: user.trackingNo,
-    invoiceNo: user.invoiceNo,
+    invoiceNo: user.invoiceID,
     carrierCode: user?.carrierCode,
     weight: user.weight,
     length: user?.lenght,
@@ -585,7 +617,7 @@ export default function Data() {
         onClick={(e) => handleDownloadInvoice(user.invoiceNo)}
         style={{ fontSize: 14, fontWeight: "500", color: "#cf640b", cursor: "pointer" }}
       >
-        {user.invoiceNo}
+        {user.invoiceID}
       </Typography>
     ),
     carrierCode: (
@@ -694,6 +726,24 @@ export default function Data() {
     // Export to Excel
     XLSX.writeFile(workbook, `shipments-${today}.xlsx`);
   };
+  const handlePageChange = async (event, value) => {
+    setPageNo(value);
+    const body = {
+      pageNo: value,
+      pageSize: pageSize,
+      startDate,
+      endDate,
+      clientCompanyId,
+      createdBy,
+      companyName,
+      trackingNo,
+    };
+    const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
+    console.log("data response:", data);
+    setTotalPages(data?.totalPages);
+    setShipInfo(data?.data);
+    // GetShipmentData();
+  };
   return (
     <div>
       <Card>
@@ -706,6 +756,7 @@ export default function Data() {
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   type="date"
+                  size="small"
                   variant="outlined"
                   fullWidth
                   margin="normal"
@@ -715,6 +766,7 @@ export default function Data() {
                 <TextField
                   label="Date To"
                   value={endDate}
+                  size="small"
                   onChange={(e) => setEndDate(e.target.value)}
                   type="date"
                   variant="outlined"
@@ -726,6 +778,7 @@ export default function Data() {
                 <TextField
                   label="Search Tracking No"
                   variant="outlined"
+                  size="small"
                   fullWidth
                   value={trackingNo}
                   onChange={(e) => setTrackingNo(e.target.value)}
@@ -736,11 +789,11 @@ export default function Data() {
                 <TextField label="Search Invoice No" variant="outlined" fullWidth margin="normal" />
               </Grid> */}
               {(userLavelId === 1 || userLavelId === 2) && (
-                <Grid item xs={6} md={2}>
+                <Grid item xs={6} md={3}>
                   <Autocomplete
                     fullWidth
                     name="creditAccountId"
-                    size="medium"
+                    size="small"
                     style={{ padding: 5, marginTop: 10 }}
                     options={companyList}
                     value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
@@ -749,7 +802,7 @@ export default function Data() {
                     renderInput={(params) => (
                       <TextField
                         name="creditAccountId"
-                        size="medium"
+                        size="small"
                         required
                         {...params}
                         label="Company"
@@ -761,6 +814,7 @@ export default function Data() {
               <Grid item xs={6} md={2}>
                 <Button
                   onClick={handleExport}
+                  size="small"
                   style={{ backgroundColor: "#52aa55", color: "white", marginTop: 13 }}
                 >
                   Export Excel
@@ -771,16 +825,45 @@ export default function Data() {
         </CardContent>
         <MDBox>
           {shipInfo?.length > 0 ? (
-            <DataTable
-              table={{ columns, rows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-            />
+            <>
+              <DataTable
+                table={{ columns, rows, paginatedRows: rows }}
+                isSorted={false}
+                entriesPerPage={false}
+                showTotalEntries={false}
+                noEndBorder
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <Pagination
+                  count={totalPages}
+                  page={pageNo}
+                  onChange={handlePageChange}
+                  color="primary"
+                  showFirstButton
+                  showLastButton
+                />
+              </div>
+            </>
           ) : (
-            <Grid item sx={12} style={{ justifyContent: "center" }}>
-              <CircularProgress />
+            <Grid
+              item
+              sx={12}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "10vh",
+                backgroundColor: "lightgrey",
+              }}
+            >
+              {loading ? <CircularProgress size={30} /> : "Data Not Found"}
             </Grid>
           )}
         </MDBox>
