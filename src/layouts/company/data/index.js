@@ -4,7 +4,16 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
-import { Button, Icon, Pagination, Grid, TextField, TablePagination } from "@mui/material";
+import {
+  Button,
+  Icon,
+  Pagination,
+  Grid,
+  TextField,
+  TablePagination,
+  CircularProgress,
+  CardContent,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 //import DataTable from "components/DataTable"; // Ensure DataTable is correctly imported
 import DataTable from "examples/Tables/DataTable";
@@ -14,6 +23,7 @@ const baseURL = process.env.REACT_APP_API_URL;
 
 export default function Data() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [companyInfo, setCompanyInfo] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [currentPage, setCurrentPage] = useState(1); // Track current page
@@ -22,6 +32,7 @@ export default function Data() {
 
   // Fetch company data with pagination
   const GetCompanyInf = async () => {
+    setLoading(true);
     const body = {
       pageNo: currentPage,
       pageSize: pageSize,
@@ -29,6 +40,7 @@ export default function Data() {
     };
     console.log("body", body);
     const { data } = await axios.post(`${baseURL}/company/getAll`, body);
+    setLoading(false);
     setCompanyInfo(data.data); // Set company data
     setTotalRecords(data.total); // Set total records
   };
@@ -137,30 +149,62 @@ export default function Data() {
 
   return (
     <div>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={8} />
-        <Grid item xs={12} md={4}>
-          <TextField
-            label="Search by Company Name"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            variant="outlined"
-            fullWidth
-            margin="normal"
-          />
+      <CardContent>
+        <Grid container spacing={6}>
+          <Grid item xs={12} md={8} />
+          <Grid item xs={12} md={4}>
+            <TextField
+              label="Search by Company Name"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              variant="outlined"
+              fullWidth
+              size="small"
+              margin="normal"
+            />
+          </Grid>
         </Grid>
-      </Grid>
-      <DataTable
-        table={{ columns, rows }}
-        isSorted={false} // Set the page size
-        noEndBorder
-      />
-      <Pagination
-        style={{ float: "right", marginTop: 10, marginBottom: 5 }}
-        count={totalPages}
-        page={currentPage}
-        onChange={HanldePagination}
-      />
+      </CardContent>
+      {companyInfo?.length > 0 ? (
+        <>
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            <Pagination
+              style={{ float: "right", marginTop: 10, marginBottom: 5 }}
+              count={totalPages}
+              page={currentPage}
+              onChange={HanldePagination}
+            />
+          </div>
+        </>
+      ) : (
+        <Grid
+          item
+          sx={12}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "10vh",
+            backgroundColor: "lightgrey",
+          }}
+        >
+          {loading ? <CircularProgress size={30} /> : "Data Not Found"}
+        </Grid>
+      )}
       {/* Pagination Controls */}
       {/* <MDBox mt={2} display="flex" justifyContent="center">
         <Pagination

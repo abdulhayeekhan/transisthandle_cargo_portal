@@ -12,6 +12,8 @@ import {
   TextField,
   TablePagination,
   Autocomplete,
+  CircularProgress,
+  CardContent,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { GetUsersListWithCompanyID } from "store/account";
@@ -24,6 +26,7 @@ export default function Data() {
   const loginInfo = JSON.parse(localStorage?.getItem("userInfo"));
   const roleId = loginInfo?.userLavel;
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState([]);
   const [companyList, setCompanyList] = useState([]);
   const [companyId, setCompanyId] = useState(loginInfo?.companyId);
@@ -38,7 +41,9 @@ export default function Data() {
   // Fetch company data with pagination
   const GetCompanyInf = async () => {
     // const { data } = await axios.post(`${baseURL}/company/getAll`, body);
+    setLoading(true);
     const { data } = await axios.get(`${baseURL}/account/getByCompany/${companyId}`);
+    setLoading(false);
     setUserInfo(data);
   };
 
@@ -122,38 +127,75 @@ export default function Data() {
 
   return (
     <div>
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={8} />
-        <Grid item xs={12} md={4}>
-          {roleId === 1 || roleId === 2 ? (
-            <Autocomplete
-              fullWidth
-              name="creditAccountId"
-              size="medium"
-              options={companyList}
-              value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-              onChange={handleCompanyChange}
-              getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-              renderInput={(params) => (
-                <TextField
-                  name="creditAccountId"
-                  size="medium"
-                  required
-                  {...params}
-                  label="Company"
-                />
-              )}
-            />
-          ) : (
-            <></>
-          )}
+      <CardContent>
+        <Grid container spacing={6}>
+          <Grid item xs={12} md={8} />
+          <Grid item xs={12} md={4}>
+            {roleId === 1 || roleId === 2 ? (
+              <Autocomplete
+                fullWidth
+                name="creditAccountId"
+                size="small"
+                options={companyList}
+                value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+                onChange={handleCompanyChange}
+                getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+                renderInput={(params) => (
+                  <TextField
+                    name="creditAccountId"
+                    size="small"
+                    required
+                    {...params}
+                    label="Company"
+                  />
+                )}
+              />
+            ) : (
+              <></>
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-      <DataTable
-        table={{ columns, rows }}
-        isSorted={false} // Set the page size
-        noEndBorder
-      />
+      </CardContent>
+      {userInfo?.length > 0 ? (
+        <>
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            {/* <Pagination
+                        style={{ float: "right", marginTop: 10, marginBottom: 5 }}
+                        count={totalPages}
+                        page={currentPage}
+                        onChange={HanldePagination}
+                      /> */}
+          </div>
+        </>
+      ) : (
+        <Grid
+          item
+          sx={12}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "10vh",
+            backgroundColor: "lightgrey",
+          }}
+        >
+          {loading ? <CircularProgress size={30} /> : "Data Not Found"}
+        </Grid>
+      )}
       {/* Pagination Controls */}
       {/* <MDBox mt={2} display="flex" justifyContent="center">
         <Pagination
