@@ -92,20 +92,13 @@ export default function App() {
       setOnMouseEnter(false);
     }
   };
-  const [roleId, setRoleId] = useState("");
-  const [userInfo, setUserInfo] = useState("");
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const GetRole = async () => {
-    let userInfoData = await JSON.parse(localStorage?.getItem("userInfo"));
-    setUserInfo(userInfoData);
-    setRoleId(userInfoData?.userLavel);
-  };
-
+  let userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+  let roleId = userInfo?.userLavel;
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
-    GetRole();
   }, [direction]);
   console.log("Appjs roleId", roleId);
   // Setting page scroll to 0 when changing the route
@@ -195,7 +188,7 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          {roleId !== null || roleId !== undefined ? getRoutes(routes) : []}
+          {getRoutes(routes)}
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/add-shipment" element={<PrivateRoute element={AddShipment} />} />
           <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />

@@ -79,70 +79,70 @@ const routes = [
     rolesAllowed: [1],
   },
 ];
-const getRoutes = () => {
-  let userLevel = "";
-  useEffect(() => {
-    const getLevel = async () => {
-      const userInfo = await JSON.parse(localStorage?.getItem("userInfo"));
-      userLevel = await userInfo?.userLavel;
-    };
-    getLevel();
-  }, [userLevel]);
-  return [
-    {
-      type: "collapse",
-      name: "Dashboard",
-      key: "dashboard",
-      icon: <Icon fontSize="small">dashboard</Icon>,
-      route: "/dashboard",
-      component: Dashboard,
-      private: true,
-      rolesAllowed: [1, 2, 3, 4],
-    },
-    {
-      type: "collapse",
-      name: "Shipment",
-      key: "shipment",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/shipment",
-      component: Shipment,
-      private: true,
-      rolesAllowed: [1, 2, 3, 4],
-    },
-    userLevel === 1 && {
-      type: "collapse",
-      name: "Company",
-      key: "company",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/company",
-      component: Company,
-      private: true,
-      rolesAllowed: [1],
-    },
-    userLevel === 1 ||
-      (userLevel === 3 && {
-        type: "collapse",
-        name: "Users",
-        key: "users",
-        icon: <Icon fontSize="small">table_view</Icon>,
-        route: "/users",
-        component: Users,
-        private: true,
-        rolesAllowed: [1, 3],
-      }),
-    userLevel === 1 && {
-      type: "collapse",
-      name: "Billing",
-      key: "billing",
-      icon: <Icon fontSize="small">receipt_long</Icon>,
-      route: "/billing",
-      component: Billing,
-      private: true,
-      rolesAllowed: [1],
-    },
-  ].filter(Boolean);
-};
-console.log("getRoutes:", getRoutes);
+// const getRoutes = () => {
+//   let userLevel = "";
+//   useEffect(() => {
+//     const getLevel = async () => {
+//       const userInfo = await JSON.parse(localStorage?.getItem("userInfo"));
+//       userLevel = await userInfo?.userLavel;
+//     };
+//     getLevel();
+//   }, [userLevel]);
+//   return [
+//     {
+//       type: "collapse",
+//       name: "Dashboard",
+//       key: "dashboard",
+//       icon: <Icon fontSize="small">dashboard</Icon>,
+//       route: "/dashboard",
+//       component: Dashboard,
+//       private: true,
+//       rolesAllowed: [1, 2, 3, 4],
+//     },
+//     {
+//       type: "collapse",
+//       name: "Shipment",
+//       key: "shipment",
+//       icon: <Icon fontSize="small">table_view</Icon>,
+//       route: "/shipment",
+//       component: Shipment,
+//       private: true,
+//       rolesAllowed: [1, 2, 3, 4],
+//     },
+//     userLevel === 1 && {
+//       type: "collapse",
+//       name: "Company",
+//       key: "company",
+//       icon: <Icon fontSize="small">table_view</Icon>,
+//       route: "/company",
+//       component: Company,
+//       private: true,
+//       rolesAllowed: [1],
+//     },
+//     userLevel === 1 ||
+//       (userLevel === 3 && {
+//         type: "collapse",
+//         name: "Users",
+//         key: "users",
+//         icon: <Icon fontSize="small">table_view</Icon>,
+//         route: "/users",
+//         component: Users,
+//         private: true,
+//         rolesAllowed: [1, 3],
+//       }),
+//     userLevel === 1 && {
+//       type: "collapse",
+//       name: "Billing",
+//       key: "billing",
+//       icon: <Icon fontSize="small">receipt_long</Icon>,
+//       route: "/billing",
+//       component: Billing,
+//       private: true,
+//       rolesAllowed: [1],
+//     },
+//   ].filter(Boolean);
+// };
+// console.log("getRoutes:", getRoutes);
 
 //const routes = getRoutes();
 
@@ -154,81 +154,76 @@ console.log("getRoutes:", getRoutes);
 //   console.log("routes", routes);
 //   return routes;
 // };
+// const getRoutes = () => {
+//   const [roleId, setRoleId] = useState("");
+//   useEffect(() => {
+//     const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+//     if (userInfo !== null || userInfo !== "") {
+//       setRoleId(userInfo?.userLavel);
+//     }
+//   }, []);
 
+//   const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+
+//   const routes = [
+//     {
+//       type: "collapse",
+//       name: "Dashboard",
+//       key: "dashboard",
+//       icon: <Icon fontSize="small">dashboard</Icon>,
+//       route: "/dashboard",
+//       component: Dashboard,
+//       private: true,
+//       rolesAllowed: [1, 2, 3, 4],
+//     },
+//     {
+//       type: "collapse",
+//       name: "Shipment",
+//       key: "shipment",
+//       icon: <Icon fontSize="small">table_view</Icon>,
+//       route: "/shipment",
+//       component: Shipment,
+//       private: true,
+//       rolesAllowed: [1, 2, 3, 4],
+//     },
+//     // Conditionally include routes based on user role
+//     (roleId === 1 || roleId === 2) && {
+//       type: "collapse",
+//       name: "Company",
+//       key: "company",
+//       icon: <Icon fontSize="small">business</Icon>,
+//       route: "/company",
+//       component: Company,
+//       private: true,
+//       rolesAllowed: [1],
+//     },
+//     (roleId === 1 || roleId === 3) && {
+//       type: "collapse",
+//       name: "Users",
+//       key: "users",
+//       icon: <Icon fontSize="small">people</Icon>,
+//       route: "/users",
+//       component: Users,
+//       private: true,
+//       rolesAllowed: [1, 3],
+//     },
+//     roleId === 1 && {
+//       type: "collapse",
+//       name: "Billing",
+//       key: "billing",
+//       icon: <Icon fontSize="small">receipt_long</Icon>,
+//       route: "/billing",
+//       component: Billing,
+//       private: true,
+//       rolesAllowed: [1],
+//     },
+//   ];
+
+//   // Filter out any undefined routes (those that do not match the conditions)
+//   return routes.filter((route) => route !== false);
+// };
+// const data = getRoutes();
+// console.log("data", data);
 //const filteredRoutes = routes.filter((route) => route.rolesAllowed.includes(roleId));
-const AppRoutes = async () => {
-  const [roleId, setRoleId] = useState(null);
-
-  // Fetch roleId from localStorage when the component mounts
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
-    setRoleId(userInfo?.userLavel); // Assuming `userLavel` holds the role
-  }, []); // Runs only once when the component mounts
-
-  // Return early if roleId is not loaded yet
-  if (roleId === null) {
-    return []; // If no roleId, return an empty array
-  }
-
-  const routes = [
-    {
-      type: "collapse",
-      name: "Dashboard",
-      key: "dashboard",
-      icon: <Icon fontSize="small">dashboard</Icon>,
-      route: "/dashboard",
-      component: Dashboard,
-      private: true,
-      rolesAllowed: [1, 2, 3, 4],
-    },
-    {
-      type: "collapse",
-      name: "Shipment",
-      key: "shipment",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/shipment",
-      component: Shipment,
-      private: true,
-      rolesAllowed: [1, 2, 3, 4],
-    },
-    (roleId === 1 || roleId === 2) && {
-      type: "collapse",
-      name: "Company",
-      key: "company",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/company",
-      component: Company,
-      private: true,
-      rolesAllowed: [1],
-    },
-    (roleId === 1 || roleId === 3) && {
-      type: "collapse",
-      name: "Users",
-      key: "users",
-      icon: <Icon fontSize="small">table_view</Icon>,
-      route: "/users",
-      component: Users,
-      private: true,
-      rolesAllowed: [1, 3],
-    },
-    roleId === 1 && {
-      type: "collapse",
-      name: "Billing",
-      key: "billing",
-      icon: <Icon fontSize="small">receipt_long</Icon>,
-      route: "/billing",
-      component: Billing,
-      private: true,
-      rolesAllowed: [1],
-    },
-  ];
-
-  // Filter out falsy values (null/undefined) from routes
-  const filteredRoutes = await routes.filter(Boolean);
-  console.log("filteredRoutes", filteredRoutes);
-  return filteredRoutes;
-};
-roleId 
-console.log("AppRoutes", AppRoutes);
 
 export default routes;
