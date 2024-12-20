@@ -219,6 +219,14 @@ function ShippingMultiShip() {
             },
           },
         ],
+        ShipmentServiceOptions: {
+          InternationalForms: {
+            FormType: ["07"],
+            UserCreatedForm: {
+              DocumentID: [""],
+            },
+          },
+        },
       },
       LabelSpecification: {
         LabelImageFormat: {
