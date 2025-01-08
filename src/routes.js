@@ -10,6 +10,7 @@ import SignUp from "layouts/authentication/sign-up";
 import Shipment from "layouts/shipment";
 import AddShipment from "layouts/shipment/add";
 import Company from "layouts/company";
+import FlightList from "layouts/flights";
 import ShipmentRate from "layouts/shipment/rate";
 import Users from "layouts/user";
 import PropTypes from "prop-types";
@@ -32,7 +33,7 @@ const routes = [
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
+    icon: <Icon fontSize="medium">dashboard</Icon>,
     route: "/dashboard",
     component: Dashboard,
     private: true,
@@ -42,9 +43,19 @@ const routes = [
     type: "collapse",
     name: "Shipment",
     key: "shipment",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="medium">airport_shuttle</Icon>,
     route: "/shipment",
     component: Shipment,
+    private: true,
+    rolesAllowed: [1, 2, 3, 4],
+  },
+  {
+    type: "collapse",
+    name: "Flights",
+    key: "flights",
+    icon: <Icon fontSize="medium">flight_takeoff</Icon>,
+    route: "/flights",
+    component: FlightList,
     private: true,
     rolesAllowed: [1, 2, 3, 4],
   },
@@ -52,7 +63,7 @@ const routes = [
     type: "collapse",
     name: "Company",
     key: "company",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="medium">verified_user</Icon>,
     route: "/company",
     component: Company,
     private: true,
@@ -62,7 +73,7 @@ const routes = [
     type: "collapse",
     name: "Users",
     key: "users",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <Icon fontSize="medium">supervisor_account</Icon>,
     route: "/users",
     component: Users,
     private: true,
@@ -72,7 +83,7 @@ const routes = [
     type: "collapse",
     name: "Billing",
     key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
+    icon: <Icon fontSize="medium">receipt_long</Icon>,
     route: "/billing",
     component: Billing,
     private: true,

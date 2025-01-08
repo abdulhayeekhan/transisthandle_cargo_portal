@@ -24,7 +24,7 @@ import MDButton from "components/MDButton";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import bgImage from "assets/images/pexels-tima-miroshnichenko-6169056.jpg";
 import brandDark from "assets/images/logo-cargo.png";
 import { useAuth } from "context/AuthContext";
 import { toast } from "react-toastify";

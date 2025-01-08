@@ -590,7 +590,7 @@ export default function Data() {
     { Header: "createdAt", accessor: "createdAt", align: "left" },
     { Header: "refund", accessor: "refund", align: "center" },
   ];
-  const rows = shipInfo.map((user) => ({
+  const rows = shipInfo?.map((user) => ({
     company: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         ESCM GmbH

@@ -29,12 +29,7 @@ function BasicLayout({ image, children }) {
         width="100%"
         minHeight="100vh"
         sx={{
-          // backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-          //   image &&
-          //   `${linearGradient(
-          //     rgba(gradients.dark.main, 0.6),
-          //     rgba(gradients.dark.state, 0.6)
-          //   )}, url(${image})`,
+          backgroundImage: `url(${image})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

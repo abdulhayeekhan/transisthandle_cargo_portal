@@ -35,9 +35,9 @@ function Footer({ light }) {
             fontSize={size.sm}
           >
             &copy; {new Date().getFullYear()}, All Rights Reserved by
-            <Link href="https://www.creative-tim.com/" target="_blank">
+            <Link href="https://netrosquare.com" target="_blank">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
-                &nbsp;MoveBox Tech&nbsp;
+                &nbsp;NetroSquare Tech Pvt Ltd.&nbsp;
               </MDTypography>
             </Link>
           </MDBox>

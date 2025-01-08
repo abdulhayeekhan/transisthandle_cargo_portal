@@ -62,14 +62,14 @@ function Footer({ company, links }) {
       >
         &copy; {new Date().getFullYear()}, All Rights Reserved by
         <MDTypography variant="button" fontWeight="medium">
-          Transit Handels Cargo Pvt. ltd.
+          &nbsp;Transit Handels Cargo Pvt. ltd.&nbsp;
         </MDTypography>
-        {/* & Powered by
-        <Link href={"https://movebox.pk"} target="_blank">
+        & Powered by
+        <Link href={"https://netrosquare.com"} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
-            &nbsp;MovBox Tech&nbsp;
+            &nbsp;NetroSquare Tech Pvt Ltd. &nbsp;
           </MDTypography>
-        </Link> */}
+        </Link>
       </MDBox>
     </MDBox>
   );
