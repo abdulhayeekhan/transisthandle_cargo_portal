@@ -25,7 +25,7 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/pexels-tima-miroshnichenko-6169056.jpg";
-import brandDark from "assets/images/logo-cargo.png";
+import brandDark from "assets/images/new-black-thc.png";
 import { useAuth } from "context/AuthContext";
 import { toast } from "react-toastify";
 
@@ -82,7 +82,7 @@ const Basic = () => {
               style={{
                 alignItems: "center",
                 alignSelf: "center",
-                width: 120,
+                width: 220,
                 marginTop: 10,
                 marginBottom: 30,
               }}

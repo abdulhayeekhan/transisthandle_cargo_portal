@@ -37,8 +37,8 @@ import PrivateRoute from "components/PrivateRoute";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
-import brandWhite from "assets/images/logowhite.png";
-import brandDark from "assets/images/logo-cargo.png";
+import brandWhite from "assets/images/new-white-logo.png";
+import brandDark from "assets/images/new-black-thc.png";
 import AddShipment from "layouts/shipment/add";
 import AddMultiShip from "layouts/shipment/add-multi";
 import SignIn from "layouts/authentication/sign-in";

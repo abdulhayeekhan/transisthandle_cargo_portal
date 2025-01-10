@@ -42,21 +42,21 @@ function Shipment() {
                 </Typography>
               </Grid>
               <Grid display="flex" xs={12} gap={2} item md={4}>
-                <Button
+                {/* <Button
                   variant="contained"
                   style={{ color: "#fff" }}
                   onClick={(e) => navigate("/add-shipment")}
                 >
                   <Icon icon={"fluent:add-12-filled"}></Icon>
                   ADD NEW SHIPMENT
-                </Button>
+                </Button> */}
                 <Button
                   variant="contained"
-                  style={{ color: "#fff" }}
+                  style={{ color: "#fff", marginRight: 0 }}
                   onClick={(e) => navigate("/add-multi")}
                 >
                   <Icon icon={"fluent:add-12-filled"}></Icon>
-                  ADD Multi SHIPMENT
+                  ADD NEW SHIPMENT
                 </Button>
               </Grid>
             </Grid>

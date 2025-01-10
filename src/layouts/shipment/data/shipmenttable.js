@@ -480,6 +480,7 @@ export default function Data() {
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState("");
   const [notfound, setNotFound] = useState("");
+  const [refrenceNo, setRefrenceNo] = useState("");
   const GetShipmentData = async () => {
     setLoading(true);
     const body = {
@@ -491,6 +492,7 @@ export default function Data() {
       createdBy,
       companyName,
       trackingNo,
+      refrenceNo,
     };
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
     console.log("data response:", data);
@@ -512,6 +514,7 @@ export default function Data() {
       createdBy,
       companyName,
       trackingNo,
+      refrenceNo,
     };
 
     const response = await axios.post(`${baseURL}/shipment/getAll`, bodyInfo);
@@ -522,7 +525,17 @@ export default function Data() {
   useEffect(() => {
     GetShipmentData();
     GetCompanyData();
-  }, [trackingNo, startDate, endDate, clientCompanyId, userLavelId, pageNo, pageSize, totalPages]);
+  }, [
+    trackingNo,
+    startDate,
+    endDate,
+    clientCompanyId,
+    userLavelId,
+    pageNo,
+    pageSize,
+    totalPages,
+    refrenceNo,
+  ]);
   const [curCompany, setCurCompany] = useState(null);
   const handleCompanyChange = (event, newValue) => {
     if (newValue !== null) {
@@ -737,6 +750,7 @@ export default function Data() {
       createdBy,
       companyName,
       trackingNo,
+      refrenceNo,
     };
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
     console.log("data response:", data);
@@ -785,11 +799,22 @@ export default function Data() {
                   margin="normal"
                 />
               </Grid>
+              <Grid item xs={6} md={2}>
+                <TextField
+                  label="Search Refrence No"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  value={refrenceNo}
+                  onChange={(e) => setRefrenceNo(e.target.value)}
+                  margin="normal"
+                />
+              </Grid>
               {/* <Grid item xs={6} md={2}>
                 <TextField label="Search Invoice No" variant="outlined" fullWidth margin="normal" />
               </Grid> */}
               {(userLavelId === 1 || userLavelId === 2) && (
-                <Grid item xs={6} md={3}>
+                <Grid item xs={6} md={2}>
                   <Autocomplete
                     fullWidth
                     name="creditAccountId"

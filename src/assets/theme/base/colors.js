@@ -133,8 +133,8 @@ const colors = {
     },
 
     dark: {
-      main: "#D81635",
-      state: "#D81635",
+      main: "#000000",
+      state: "#dbaf5a",
     },
   },
 
