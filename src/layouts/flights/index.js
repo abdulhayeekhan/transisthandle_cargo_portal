@@ -5,6 +5,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Card,
+  CardHeader,
+  CardContent,
   LinearProgress,
 } from "@mui/material";
 
@@ -20,7 +23,7 @@ import DataTable from "examples/Tables/DataTable";
 import { Icon } from "@iconify/react";
 // Data
 import FlightTableData from "layouts/flights/data/flighttable";
-import { Button, Typography, TextField, Card, CardHeader, CardContent } from "@mui/material";
+import { Button, Typography, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -46,7 +49,7 @@ function Flights() {
                   <Button
                     variant="contained"
                     style={{ color: "#fff" }}
-                    onClick={(e) => navigate("/add-shipment")}
+                    onClick={(e) => navigate("/add-flight")}
                   >
                     <Icon icon={"fluent:add-12-filled"}></Icon>
                     ADD NEW FLIGHT
