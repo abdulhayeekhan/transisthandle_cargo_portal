@@ -36,23 +36,15 @@ function Shipment() {
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Grid container>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={10}>
                 <Typography>
                   You can view, print your shipments label here. (Timezone: America/New York)
                 </Typography>
               </Grid>
-              <Grid display="flex" xs={12} gap={2} item md={4}>
-                {/* <Button
-                  variant="contained"
-                  style={{ color: "#fff" }}
-                  onClick={(e) => navigate("/add-shipment")}
-                >
-                  <Icon icon={"fluent:add-12-filled"}></Icon>
-                  ADD NEW SHIPMENT
-                </Button> */}
+              <Grid item xs={12} md={2}>
                 <Button
                   variant="contained"
-                  style={{ color: "#fff", marginRight: 0 }}
+                  style={{ color: "#fff" }}
                   onClick={(e) => navigate("/add-multi")}
                 >
                   <Icon icon={"fluent:add-12-filled"}></Icon>
@@ -61,6 +53,7 @@ function Shipment() {
               </Grid>
             </Grid>
           </Grid>
+
           <Grid item xs={12}>
             <ShipmentTableData />
           </Grid>

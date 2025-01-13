@@ -41,6 +41,7 @@ import {
 } from "@mui/lab";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const baseURL = process.env.REACT_APP_API_URL;
 
@@ -165,9 +166,26 @@ export default function Data() {
         {user.firstName + " " + user.lastName}
       </MDTypography>
     ),
+    run: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {user.run}
+      </MDTypography>
+    ),
     createdAt: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {user.createdAt}
+      </MDTypography>
+    ),
+    action: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        <Link to={`/view-flight/${user?.id}`}>
+          <Icon fontSize="medium">visibility</Icon>
+        </Link>
+        {userLavelId === 1 && (
+          <Link to={"/"}>
+            <Icon fontSize="medium">create</Icon>
+          </Link>
+        )}
       </MDTypography>
     ),
   }));
@@ -178,7 +196,9 @@ export default function Data() {
     { Header: "Bags", accessor: "bags", align: "left" },
     { Header: "AWB", accessor: "awb", align: "left" },
     { Header: "Manager", accessor: "manager", align: "left" },
+    { Header: "Run", accessor: "run", align: "left" },
     { Header: "created At", accessor: "createdAt", align: "left" },
+    { Header: "Action", accessor: "action", align: "left" },
   ];
 
   const handleExport = async () => {

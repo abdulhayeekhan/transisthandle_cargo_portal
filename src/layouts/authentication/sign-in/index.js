@@ -74,9 +74,15 @@ const Basic = () => {
   };
   return (
     <BasicLayout image={bgImage}>
-      <Card>
+      <Card style={{ backgroundColor: "#fef9c7" }}>
         <MDBox pt={4} pb={3} px={3}>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <img
               src={brandDark}
               style={{
@@ -113,7 +119,7 @@ const Basic = () => {
               <MDTypography
                 variant="button"
                 fontWeight="regular"
-                color="text"
+                color="grey"
                 onClick={handleSetRememberMe}
                 sx={{ cursor: "pointer", userSelect: "none", ml: -1 }}
               >

@@ -50,6 +50,7 @@ import ShipmentRate from "layouts/shipment/rate";
 import EditCompany from "layouts/company/update";
 import { toast, ToastContainer } from "react-toastify";
 import AddFlight from "layouts/flights/add";
+import ViewFlight from "layouts/flights/view";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
@@ -193,6 +194,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/dashboard" />} />
           <Route path="/add-shipment" element={<PrivateRoute element={AddShipment} />} />
           <Route path="/add-flight" element={<PrivateRoute element={AddFlight} />} />
+          <Route path="/view-flight/:id" element={<PrivateRoute element={ViewFlight} />} />
           <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />
           <Route path="/edit-company/:companyId" element={<PrivateRoute element={EditCompany} />} />
           <Route path="/add-user" element={<PrivateRoute element={AddUser} />} />

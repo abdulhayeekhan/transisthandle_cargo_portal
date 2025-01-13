@@ -28,16 +28,30 @@ import Paper from "@mui/material/Paper";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import MDBox from "components/MDBox";
 import axios from "axios";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2", // Blue
+    },
+    secondary: {
+      main: "#d32f2f", // Red
+    },
+  },
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
+  },
+});
 const baseURL = process.env.REACT_APP_API_URL;
 
 function AddFlight() {
   const navigate = useNavigate();
   let token = localStorage.getItem("token");
   const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+  console.log("userInfo:", userInfo?.id);
   const userLavelId = userInfo?.userLavel;
 
   const [companyId, setClientCompanyId] = useState(
@@ -62,12 +76,20 @@ function AddFlight() {
   const [curCompany, setCurCompany] = useState(null);
   const [curUser, setCurUser] = useState(null);
   const [curuserID, setCurUserID] = useState("");
+  const [statusList, setStatusList] = useState([]);
+  const [status, setStatus] = useState("");
   const GetCompanyData = async () => {
     const { data } = await axios.get(`${baseURL}/company/getAllList`);
     setCompanyList(data);
   };
+  const GetStatusData = async () => {
+    const { data } = await axios.get(`${baseURL}/flight/GetActiveStatus`);
+    console.log("status response:", data);
+    setStatusList(data);
+  };
   useEffect(() => {
     GetCompanyData();
+    GetStatusData();
   }, []);
   const handleCompanyChange = async (event, newValue) => {
     if (newValue !== null) {
@@ -109,7 +131,6 @@ function AddFlight() {
       },
     ]);
   };
-  const handleSaveFlight = async () => {};
   const [trackingId, setTrackingId] = useState("");
   const [flightId, setFlightId] = useState("");
   const handleTracking = async (e) => {
@@ -123,17 +144,26 @@ function AddFlight() {
       if (trackingId !== "") {
         const { data } = await axios.post(`${baseURL}/flight/GetTrackID`, body);
         console.log("response data:", data);
-        if (rowData?.shipmentId !== data?.id) {
-          setRowData([
-            ...rowData,
-            {
-              arrayid: uuidv4(),
-              shipmentId: data?.id,
-              trackingNo: data?.trackingNo,
-              bags: data?.bags,
-              statusID: 0,
-            },
-          ]);
+        if (rowData?.trackingNo !== data?.trackingNo) {
+          setRowData((prevRowData) => {
+            // Check if trackingNo already exists
+            const trackingExists = prevRowData.some((item) => item.trackingNo === data?.trackingNo);
+
+            if (trackingExists) {
+              alert("Tracking number already exists!"); // Optional: Show an alert or handle error
+              return prevRowData; // Return previous data without adding a duplicate
+            }
+            return [
+              ...prevRowData,
+              {
+                arrayid: uuidv4(),
+                shipmentId: data?.id,
+                trackingNo: data?.trackingNo,
+                bags: data?.bags,
+                statusID: status,
+              },
+            ];
+          });
         }
         setTrackingId("");
       } else {
@@ -143,132 +173,232 @@ function AddFlight() {
       toast.error("" + error?.response?.data?.message);
     }
   };
+  const handleChangeRows = (e, id) => {
+    e.preventDefault();
+    const newRows = rowData?.map((item) =>
+      item.arrayid === id ? { ...item, [e.target.name]: e.target.value } : item
+    );
+    setRowData(newRows);
+  };
+  const handleDeleteRow = async (id) => {
+    const NewRecord = await rowData.filter((data) => data.arrayid !== id);
+    setRowData(NewRecord);
+  };
+  const handleSaveFlight = async () => {
+    let body = {
+      companyID: companyId,
+      awb: flightId,
+      managedBy: curuserID,
+      createdBy: userInfo?.id,
+      shipDate: shipDate,
+      details: rowData,
+    };
+    let data = {
+      flightsInfo: body,
+    };
+    await axios
+      .post(`${baseURL}/flight/add`, body)
+      .then((res) => {
+        toast.success("Cong! save flight Info");
+        navigate("/flights");
+      })
+      .catch((err) => {
+        toast.error("" + err);
+      });
+  };
   return (
     <DashboardLayout>
       {/* <DashboardNavbar /> */}
+      <ThemeProvider theme={theme}>
+        <MDBox>
+          <Grid container spacing={6} mt={1}>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    {/* Top Section */}
+                    <Grid item xs={12}>
+                      <Typography>Flight</Typography>
+                    </Grid>
 
-      <MDBox
-        sx={{
-          height: "60vh", // Set a fixed height for the scrollable area
-          overflowY: "auto", // Enable vertical scrolling
-          padding: 2,
-          marginY: 2,
-        }}
-      >
-        <Card>
-          <CardContent>
-            <Grid container spacing={2}>
-              {/* Top Section */}
-              <Grid item xs={12}>
-                <Typography>Flight</Typography>
-              </Grid>
-
-              <Grid item xs={12} sm={3}>
-                <Autocomplete
-                  fullWidth
-                  name="creditAccountId"
-                  size="small"
-                  options={companyList}
-                  value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-                  onChange={handleCompanyChange}
-                  getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-                  renderInput={(params) => (
-                    <TextField
-                      name="creditAccountId"
-                      size="small"
-                      required
-                      {...params}
-                      label="Company"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <Autocomplete
-                  fullWidth
-                  name="creditAccountId"
-                  size="small"
-                  options={userList}
-                  value={curUser} // Bind the selected value (object with `id`, `label`, `code`)
-                  onChange={handleUserChange}
-                  getOptionLabel={(option) => `${option.firstName + " " + option.lastName}`} // Combine `label` and `code` for display
-                  renderInput={(params) => (
-                    <TextField
-                      name="creditAccountId"
-                      size="small"
-                      required
-                      {...params}
-                      label="Manager"
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <TextField
-                  label="Flight ID"
-                  size="small"
-                  value={flightId}
-                  onChange={(e) => setFlightId(e.target.value)}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={3}>
-                <form onSubmit={(e) => handleTracking(e)}>
-                  <TextField
-                    label="Tracking ID"
-                    size="small"
-                    value={trackingId}
-                    onChange={(e) => setTrackingId(e.target.value)}
-                    fullWidth
-                  />
-                  {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
-                </form>
-              </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Autocomplete
+                        fullWidth
+                        name="creditAccountId"
+                        size="small"
+                        options={companyList}
+                        value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+                        onChange={handleCompanyChange}
+                        getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+                        renderInput={(params) => (
+                          <TextField
+                            name="creditAccountId"
+                            size="small"
+                            required
+                            {...params}
+                            label="Company"
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Autocomplete
+                        fullWidth
+                        name="creditAccountId"
+                        size="small"
+                        options={userList}
+                        value={curUser} // Bind the selected value (object with `id`, `label`, `code`)
+                        onChange={handleUserChange}
+                        getOptionLabel={(option) => `${option.firstName + " " + option.lastName}`} // Combine `label` and `code` for display
+                        renderInput={(params) => (
+                          <TextField
+                            name="creditAccountId"
+                            size="small"
+                            required
+                            {...params}
+                            label="Manager"
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        label="Flight ID"
+                        size="small"
+                        value={flightId}
+                        onChange={(e) => setFlightId(e.target.value)}
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      {/* <FormControl fullWidth> */}
+                      <TextField
+                        label="Flight Status"
+                        value={status}
+                        size="small"
+                        onChange={(e) => setStatus(e.target.value)}
+                        variant="outlined"
+                        fullWidth
+                        select
+                      >
+                        <MenuItem>select status</MenuItem>
+                        {statusList?.map((item) => (
+                          <MenuItem key={item?.id} value={item?.id}>
+                            {item?.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
             </Grid>
-          </CardContent>
-        </Card>
-        <Card style={{ marginTop: 5 }}>
-          <TableContainer component={Paper}>
-            <Table size="small" aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tracking No</TableCell>
-                  <TableCell>Bags</TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rowData?.map((items) => (
-                  <TableRow key={items.shipmentId}>
-                    <TableCell>{items.trackingNo}</TableCell>
-                    <TableCell>{items.bags}</TableCell>
-                    <TableCell>{items.statusID}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
-      </MDBox>
-      <Grid container spacing={6} mt={1}>
-        <Grid item xs={12}>
-          <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
-            <Button variant="contained" style={{ color: "#fff" }} type="submit">
-              <Icon fontSize="large">save</Icon>
-              Save
-            </Button>
+            <Grid item xs={3}>
+              <Card>
+                <CardContent>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={13}>
+                      <form onSubmit={(e) => handleTracking(e)}>
+                        <TextField
+                          label="Tracking ID"
+                          size="small"
+                          value={trackingId}
+                          onChange={(e) => setTrackingId(e.target.value)}
+                          fullWidth
+                        />
+                        {/* <TextField label="Address Line 2" disabled={true} size="small" fullWidth /> */}
+                      </form>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
+                        <Button
+                          variant="contained"
+                          onClick={() => handleSaveFlight()}
+                          style={{ color: "#fff" }}
+                          type="submit"
+                        >
+                          <Icon fontSize="large">save</Icon>
+                          Save
+                        </Button>
 
-            <Button
-              variant="outlined"
-              onClick={(e) => navigate("/flights")}
-              style={{ color: "grey" }}
-            >
-              <Icon fontSize="large">close</Icon>
-              Cancel
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
+                        <Button
+                          variant="outlined"
+                          onClick={(e) => navigate("/flights")}
+                          style={{ color: "grey" }}
+                        >
+                          <Icon fontSize="large">close</Icon>
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={9}>
+              <Card>
+                <TableContainer component={Paper}>
+                  <Table size="small" aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Sr. No</TableCell>
+                        <TableCell>Tracking No</TableCell>
+                        <TableCell>Bags</TableCell>
+                        <TableCell>Status</TableCell>
+                        <TableCell>Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rowData?.map((items, index) => (
+                        <TableRow key={items.shipmentId}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{items.trackingNo}</TableCell>
+                          <TableCell>
+                            <TextField
+                              label="Bags"
+                              size="small"
+                              name="bags"
+                              type="number"
+                              value={items?.bags}
+                              onChange={(e) => handleChangeRows(e, items?.arrayid)}
+                              style={{ width: 100 }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <TextField
+                              label="Flight Status"
+                              value={items?.statusID}
+                              size="small"
+                              name="statusID"
+                              onChange={(e) => handleChangeRows(e, items?.arrayid)}
+                              variant="outlined"
+                              fullWidth
+                              select
+                            >
+                              <MenuItem>select status</MenuItem>
+                              {statusList?.map((item) => (
+                                <MenuItem key={item?.id} value={item?.id}>
+                                  {item?.name}
+                                </MenuItem>
+                              ))}
+                            </TextField>
+                          </TableCell>
+                          <TableCell>
+                            <Button onClick={() => handleDeleteRow(items?.arrayid)}>
+                              <Icon fontSize="medium">delete_forever</Icon>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Card>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <Grid container spacing={6} mt={1}></Grid>
+      </ThemeProvider>
     </DashboardLayout>
   );
 }

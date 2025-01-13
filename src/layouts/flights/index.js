@@ -45,7 +45,7 @@ function Flights() {
                 <Typography>You can view, flights tracking here.</Typography>
               </Grid>
               {(userLavelId === 1 || userLavelId === 2) && (
-                <Grid display="flex" xs={12} gap={2} item md={4}>
+                <Grid item xs={12} md={2}>
                   <Button
                     variant="contained"
                     style={{ color: "#fff" }}

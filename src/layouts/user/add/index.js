@@ -12,6 +12,7 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import { ArrowDownward } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // Data
 import shipmentTableData from "layouts/shipment/data/shipmenttable";
@@ -46,6 +47,19 @@ import { useDispatch } from "react-redux";
 import { AddNewUser } from "store/account";
 import axios from "axios";
 const baseURL = process.env.REACT_APP_API_URL;
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#1976d2", // Blue
+    },
+    secondary: {
+      main: "#d32f2f", // Red
+    },
+  },
+  typography: {
+    fontFamily: "Roboto, Arial, sans-serif",
+  },
+});
 
 function AddUser() {
   const navigate = useNavigate();
@@ -56,7 +70,7 @@ function AddUser() {
   const [companyList, setCompanyList] = useState([]);
   const [curCompany, setCurCompany] = useState(null);
 
-  const [userLavel, setUserLavel] = useState(3);
+  const [userLavel, setUserLavel] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [companyId, setCompanyId] = useState(loginInfo?.companyId);
@@ -134,218 +148,234 @@ function AddUser() {
       setCurCompany(null);
     }
   };
+  const menuOptions =
+    companyId === 1
+      ? [
+          { value: 1, label: "HO Admin" },
+          { value: 2, label: "HO User" },
+        ]
+      : [
+          { value: 3, label: "CO Admin" },
+          { value: 4, label: "CO User" },
+        ];
 
   return (
     <DashboardLayout>
-      {/* <DashboardNavbar /> */}
-      <MDBox
-        sx={{
-          height: "69vh", // Set a fixed height for the scrollable area
-          overflowY: "auto", // Enable vertical scrolling
-          padding: 2,
-          background: "lightgray",
-          marginY: 2,
-        }}
-      >
-        <Grid container spacing={6}>
-          <Grid item xs={12} md={12}>
-            <Card sx={{ maxWidth: "100%", padding: "20px" }}>
-              <CardHeader
-                title="Add New User"
-                titleTypographyProps={{ align: "center", fontWeight: "bold" }}
-              />
-
-              <CardContent>
-                {/* Weight Inputs */}
-                <Box display="flex" gap={2} mb={2}>
-                  {roleId === 1 || roleId === 2 ? (
-                    <Autocomplete
-                      fullWidth
-                      name="creditAccountId"
-                      size="medium"
-                      options={companyList}
-                      value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
-                      onChange={handleCompanyChange}
-                      getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
-                      renderInput={(params) => (
-                        <TextField
-                          name="creditAccountId"
-                          size="medium"
-                          required
-                          {...params}
-                          label="Company"
-                        />
-                      )}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                  {/* <FormControl fullWidth> */}
-                  {/* <TextField
-                    label="Right"
-                    value={userLavel}
-                    onChange={(e) => setUserLavel(e.target.value)}
-                    variant="outlined"
-                    fullWidth
-                    select
-                  >
-                    <option>1</option>
-                    <option>1</option>
-                  </TextField> */}
-                  <select
-                    onChange={(e) => setUserLavel(e.target.value)}
-                    value={userLavel}
-                    label="Right"
-                  >
-                    {companyId === 1 ? (
-                      <>
-                        <option value={1}>HO Admin</option>
-                        <option value={2}>HO User</option>
-                      </>
-                    ) : (
-                      <>
-                        <option value={3}>CO Admin</option>
-                        <option value={4}>CO User</option>
-                      </>
-                    )}
-                  </select>
-                  {/* </FormControl> */}
-                  <TextField
-                    label="Email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    fullWidth
-                  />
-                </Box>
-                <Box display="flex" gap={2} mb={2}>
-                  <TextField
-                    label="First Name"
-                    name="labelCount"
-                    value={firstName}
-                    required
-                    onChange={(e) => setFirstName(e.target.value)}
-                    fullWidth
-                  />
-                  <TextField
-                    label="Last Name"
-                    name="maxUser"
-                    value={lastName}
-                    required
-                    onChange={(e) => setLastName(e.target.value)}
-                    fullWidth
-                  />
-                </Box>
-                <Box display="flex" gap={2} mb={2}>
-                  <TextField
-                    label="Contact No"
-                    value={contactNo}
-                    name="contactNo"
-                    required
-                    onChange={(e) => setContactNo(e.target.value)}
-                    fullWidth
-                  />
-                  <TextField
-                    label="Password"
-                    name="password"
-                    value={password}
-                    required
-                    onChange={(e) => setPassword(e.target.value)}
-                    fullWidth
-                  />
-                </Box>
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={companyInfo?.isActive}
-                      onChange={(e) => handleIsActive(e)}
-                      name="checked"
-                      color="primary" // color can be 'primary', 'secondary', or 'default'
-                    />
-                  }
-                  label="Account Active"
+      <ThemeProvider theme={theme}>
+        {/* <DashboardNavbar /> */}
+        <MDBox
+          sx={{
+            height: "69vh", // Set a fixed height for the scrollable area
+            overflowY: "auto", // Enable vertical scrolling
+            padding: 2,
+            background: "lightgray",
+            marginY: 2,
+          }}
+        >
+          <Grid container spacing={6}>
+            <Grid item xs={12} md={12}>
+              <Card sx={{ maxWidth: "100%", padding: "20px" }}>
+                <CardHeader
+                  title="Add New User"
+                  titleTypographyProps={{ align: "center", fontWeight: "bold" }}
                 />
 
-                {/* Package */}
-                {/* <FormControl fullWidth margin="normal">
+                <CardContent>
+                  {/* Weight Inputs */}
+                  <Box display="flex" gap={2} mb={2}>
+                    {roleId === 1 || roleId === 2 ? (
+                      <Autocomplete
+                        fullWidth
+                        name="creditAccountId"
+                        size="medium"
+                        options={companyList}
+                        value={curCompany} // Bind the selected value (object with `id`, `label`, `code`)
+                        onChange={handleCompanyChange}
+                        getOptionLabel={(option) => `${option.companyName}`} // Combine `label` and `code` for display
+                        renderInput={(params) => (
+                          <TextField
+                            name="creditAccountId"
+                            size="medium"
+                            required
+                            {...params}
+                            label="Company"
+                          />
+                        )}
+                      />
+                    ) : (
+                      <></>
+                    )}
+                    {/* <FormControl fullWidth> */}
+                    <TextField
+                      label="User Role"
+                      value={userLavel}
+                      onChange={(e) => setUserLavel(e.target.value)}
+                      variant="outlined"
+                      fullWidth
+                      select
+                    >
+                      <MenuItem value={""}>select role</MenuItem>
+                      {menuOptions.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                    {/* <select
+                      onChange={(e) => setUserLavel(e.target.value)}
+                      value={userLavel}
+                      label="Right"
+                    >
+                      {companyId === 1 ? (
+                        <>
+                          <option value={1}>HO Admin</option>
+                          <option value={2}>HO User</option>
+                        </>
+                      ) : (
+                        <>
+                          <option value={3}>CO Admin</option>
+                          <option value={4}>CO User</option>
+                        </>
+                      )}
+                    </select> */}
+                    {/* </FormControl> */}
+                    <TextField
+                      label="Email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      fullWidth
+                    />
+                  </Box>
+                  <Box display="flex" gap={2} mb={2}>
+                    <TextField
+                      label="First Name"
+                      name="labelCount"
+                      value={firstName}
+                      required
+                      onChange={(e) => setFirstName(e.target.value)}
+                      fullWidth
+                    />
+                    <TextField
+                      label="Last Name"
+                      name="maxUser"
+                      value={lastName}
+                      required
+                      onChange={(e) => setLastName(e.target.value)}
+                      fullWidth
+                    />
+                  </Box>
+                  <Box display="flex" gap={2} mb={2}>
+                    <TextField
+                      label="Contact No"
+                      value={contactNo}
+                      name="contactNo"
+                      required
+                      onChange={(e) => setContactNo(e.target.value)}
+                      fullWidth
+                    />
+                    <TextField
+                      label="Password"
+                      name="password"
+                      value={password}
+                      required
+                      onChange={(e) => setPassword(e.target.value)}
+                      fullWidth
+                    />
+                  </Box>
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={companyInfo?.isActive}
+                        onChange={(e) => handleIsActive(e)}
+                        name="checked"
+                        color="primary" // color can be 'primary', 'secondary', or 'default'
+                      />
+                    }
+                    label="Account Active"
+                  />
+
+                  {/* Package */}
+                  {/* <FormControl fullWidth margin="normal">
                   <FormLabel>Package</FormLabel>
                   <Select defaultValue="All Package Types">
                     <MenuItem value="All Package Types">All Package Types</MenuItem>
                     {/* Add more options as needed 
                   </Select>
                 </FormControl> */}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
+              <Button variant="contained" style={{ color: "#fff" }} onClick={handleSaveInfo}>
+                <Icon fontSize="large">save</Icon>
+                Save
+              </Button>
+
+              <Button
+                variant="outlined"
+                onClick={(e) => navigate("/users")}
+                style={{ color: "grey" }}
+              >
+                <Icon fontSize="large">close</Icon>
+                Cancel
+              </Button>
+            </Box>
           </Grid>
         </Grid>
-      </MDBox>
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Box display="flex" style={{ justifyContent: "center" }} gap={2} mb={2}>
-            <Button variant="contained" style={{ color: "#fff" }} onClick={handleSaveInfo}>
-              <Icon fontSize="large">save</Icon>
-              Save
-            </Button>
 
-            <Button
-              variant="outlined"
-              onClick={(e) => navigate("/users")}
-              style={{ color: "grey" }}
-            >
-              <Icon fontSize="large">close</Icon>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Form in Modal</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2}>
+              {/* Row 1 */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Field 1"
+                  name="field1"
+                  value={formData.field1}
+                  onChange={handleChange}
+                />
+              </Grid>
+              {/* Row 2 */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Field 2"
+                  name="field2"
+                  value={formData.field2}
+                  onChange={handleChange}
+                />
+              </Grid>
+              {/* Row 3 */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Field 3"
+                  name="field3"
+                  value={formData.field3}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
               Cancel
             </Button>
-          </Box>
-        </Grid>
-      </Grid>
-
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Form in Modal</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2}>
-            {/* Row 1 */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Field 1"
-                name="field1"
-                value={formData.field1}
-                onChange={handleChange}
-              />
-            </Grid>
-            {/* Row 2 */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Field 2"
-                name="field2"
-                value={formData.field2}
-                onChange={handleChange}
-              />
-            </Grid>
-            {/* Row 3 */}
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Field 3"
-                name="field3"
-                value={formData.field3}
-                onChange={handleChange}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleSaveInfo} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* <Footer /> */}
+            <Button onClick={handleSaveInfo} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* <Footer /> */}
+      </ThemeProvider>
     </DashboardLayout>
   );
 }
