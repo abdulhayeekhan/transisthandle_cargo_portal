@@ -305,8 +305,9 @@ export default function Data() {
   //     console.error("Error generating PDF:", error);
   //   }
   // };
-
+  const [labelLoad, setLabelLoad] = useState(false);
   const convertImageToPdfBase64 = async (id) => {
+    setLabelLoad(true);
     try {
       const doc = new jsPDF({
         orientation: "portrait", // Portrait mode
@@ -443,7 +444,7 @@ export default function Data() {
       // Convert the generated PDF to Base64
       const pdfBase64Data = doc.output("datauristring");
       setPdfBase64(pdfBase64Data);
-      setIsModalOpen(true); // Open modal
+      setIsModalOpen(true);
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast.error("Error generating label");
@@ -578,6 +579,7 @@ export default function Data() {
     length: user?.lenght,
     width: user?.width,
     height: user?.height,
+    boxes: user?.boxes,
     recipient: user?.name,
     shipTo: user?.address + ", " + user?.city + " " + user?.postalCode + ", " + user?.countryCode,
     CustReference: user?.customerReference,
@@ -594,6 +596,7 @@ export default function Data() {
     { Header: "length", accessor: "length", align: "left" },
     { Header: "width", accessor: "width", align: "center" },
     { Header: "height", accessor: "height", align: "center" },
+    { Header: "Boxes", accessor: "boxes", align: "center" },
     // { Header: "currency", accessor: "currency", align: "center" },
     // { Header: "total", accessor: "total", align: "left" },
     { Header: "recipient", accessor: "recipient", align: "left" },
@@ -606,7 +609,7 @@ export default function Data() {
   const rows = shipInfo?.map((user) => ({
     company: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        ESCM GmbH
+        {user?.companyName}
       </MDTypography>
     ),
     label: (
@@ -658,6 +661,11 @@ export default function Data() {
         {user.height}
       </MDTypography>
     ),
+    boxes: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {user.boxes}
+      </MDTypography>
+    ),
     currency: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {user.currency}
@@ -701,7 +709,7 @@ export default function Data() {
   }));
 
   const columns = [
-    { Header: "company", accessor: "company", width: "10%", align: "left" },
+    { Header: "Client", accessor: "company", width: "10%", align: "left" },
     { Header: "label", accessor: "label", align: "left" },
     { Header: "tracking", accessor: "tracking", align: "left" },
     { Header: "invoice#", accessor: "invoiceNo", align: "center" },
@@ -710,6 +718,7 @@ export default function Data() {
     { Header: "length", accessor: "length", align: "left" },
     { Header: "width", accessor: "width", align: "center" },
     { Header: "height", accessor: "height", align: "center" },
+    { Header: "Boxes", accessor: "boxes", align: "center" },
     // { Header: "currency", accessor: "currency", align: "center" },
     // { Header: "total", accessor: "total", align: "left" },
     { Header: "recipient", accessor: "recipient", align: "left" },
@@ -758,6 +767,10 @@ export default function Data() {
     setShipInfo(data?.data);
     // GetShipmentData();
   };
+  const updatedRows = rows.map((row) => ({
+    ...row,
+    style: row.isUpdated === 1 ? { backgroundColor: "#000" } : {}, // Change to desired color
+  }));
   return (
     <div>
       <Card>
@@ -852,7 +865,7 @@ export default function Data() {
           {shipInfo?.length > 0 ? (
             <>
               <DataTable
-                table={{ columns, rows, paginatedRows: rows }}
+                table={{ columns, rows: updatedRows, paginatedRows: rows }}
                 isSorted={false}
                 entriesPerPage={false}
                 showTotalEntries={false}
@@ -974,7 +987,9 @@ export default function Data() {
                 title="PDF Viewer"
               ></iframe>
             ) : (
-              <p>Loading PDF...</p>
+              <p style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                Loading PDF...
+              </p>
             )}
           </div>
         </div>
