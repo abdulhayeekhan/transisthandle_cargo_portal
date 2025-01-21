@@ -52,6 +52,7 @@ import { toast, ToastContainer } from "react-toastify";
 import AddFlight from "layouts/flights/add";
 import ViewFlight from "layouts/flights/view";
 import "react-toastify/dist/ReactToastify.css";
+import bgImage from "assets/images/pexels-ethan-nguyen-63327081-9749472.jpg";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -145,7 +146,6 @@ export default function App() {
 
   const configsButton = (
     <MDBox
-      display="flex"
       justifyContent="center"
       alignItems="center"
       width="3.25rem"

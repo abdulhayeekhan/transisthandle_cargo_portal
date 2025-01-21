@@ -12,6 +12,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 // Material Dashboard 2 React context
 import { useMaterialUIController, setLayout } from "context";
+import bgImage from "assets/images/pexels-ethan-nguyen-63327081-9749472.jpg";
 
 function DashboardLayout({ children }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -28,7 +29,6 @@ function DashboardLayout({ children }) {
         sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
           p: 3,
           position: "relative",
-
           [breakpoints.up("xl")]: {
             marginLeft: miniSidenav ? pxToRem(120) : pxToRem(274),
             transition: transitions.create(["margin-left", "margin-right"], {
