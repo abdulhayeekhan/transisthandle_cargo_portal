@@ -45,6 +45,7 @@ import SignIn from "layouts/authentication/sign-in";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import AddCompany from "layouts/company/add";
+import AddTracking from "layouts/tracking/add";
 import AddUser from "layouts/user/add";
 import ShipmentRate from "layouts/shipment/rate";
 import EditCompany from "layouts/company/update";
@@ -196,8 +197,10 @@ export default function App() {
           <Route path="/add-flight" element={<PrivateRoute element={AddFlight} />} />
           <Route path="/view-flight/:id" element={<PrivateRoute element={ViewFlight} />} />
           <Route path="/add-company" element={<PrivateRoute element={AddCompany} />} />
+          <Route path="/add-tracking" element={<PrivateRoute element={AddTracking} />} />
           <Route path="/edit-company/:companyId" element={<PrivateRoute element={EditCompany} />} />
           <Route path="/add-user" element={<PrivateRoute element={AddUser} />} />
+
           <Route path="/add-multi" element={<PrivateRoute element={AddMultiShip} />} />
           <Route path="/get-shipment-rate" element={<PrivateRoute element={ShipmentRate} />} />
           <Route path="/authentication/sign-in" logo={brandDark} element={<SignIn />} />

@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useMemo, useEffect, useState } from "react";
 
 // prop-types is a library for typechecking of props
@@ -184,7 +169,12 @@ function DataTable({
         </MDBox>
       ) : null}
       <Table {...getTableProps()}>
-        <MDBox component="thead">
+        <MDBox
+          component="thead"
+          sx={{
+            backgroundColor: "#492904", // or use theme colors like 'primary.main'
+          }}
+        >
           {headerGroups.map((headerGroup, key) => (
             <TableRow key={key} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column, idx) => (

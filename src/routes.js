@@ -8,6 +8,7 @@ import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import Shipment from "layouts/shipment";
+import Tracking from "layouts/tracking";
 import AddShipment from "layouts/shipment/add";
 import Company from "layouts/company";
 import FlightList from "layouts/flights";
@@ -38,6 +39,16 @@ const routes = [
     component: Dashboard,
     private: true,
     rolesAllowed: [1, 2, 3, 4],
+  },
+  {
+    type: "collapse",
+    name: "Tracking",
+    key: "tracking",
+    icon: <Icon fontSize="medium">track_changes</Icon>,
+    route: "/tracking",
+    component: Tracking,
+    private: true,
+    rolesAllowed: [1, 2],
   },
   {
     type: "collapse",
