@@ -21,6 +21,16 @@ export const AddNewTracking = createAsyncThunk("addnewtracking", async (body, { 
   }
 });
 
+
+export const GetTrackingData = createAsyncThunk("gettrackingdata", async (body) => {
+  try {
+    const { data } = await axios.post(`${baseURL}/localShipment/GetTrackings`, body);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 // export const UpdateCompany = createAsyncThunk("updateCompany", async (data, { dispatch }) => {
 //   try {
 //     await axios
@@ -47,15 +57,7 @@ export const AddNewTracking = createAsyncThunk("addnewtracking", async (body, { 
 //   }
 // });
 
-// export const GetCompaniesList = createAsyncThunk("getcompanieslist", async () => {
-//   try {
-//     const { data } = await axios.get(`${baseURL}/company/getAll`);
-//     console.log("data:", data);
-//     return data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
+
 
 const initialState = {
   data: [],
@@ -81,7 +83,20 @@ const TrackingSlice = createSlice({
       .addCase(AddNewTracking.rejected, (state, action) => {
         state.loading = false;
         state.status = false;
-      });
+      })
+
+      .addCase(GetTrackingData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(GetTrackingData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+        state.status = true;
+      })
+      .addCase(GetTrackingData.rejected, (state, action) => {
+        state.loading = false;
+        state.status = false;
+      })
   },
 });
 
