@@ -54,7 +54,7 @@ import AddFlight from "layouts/flights/add";
 import ViewFlight from "layouts/flights/view";
 import "react-toastify/dist/ReactToastify.css";
 import bgImage from "assets/images/pexels-ethan-nguyen-63327081-9749472.jpg";
-
+import ViewInvoice from "layouts/tracking/view";
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -200,6 +200,7 @@ export default function App() {
           <Route path="/add-tracking" element={<PrivateRoute element={AddTracking} />} />
           <Route path="/edit-company/:companyId" element={<PrivateRoute element={EditCompany} />} />
           <Route path="/add-user" element={<PrivateRoute element={AddUser} />} />
+          <Route path="/invoice-view/:id" element={<PrivateRoute element={ViewInvoice} />} />
 
           <Route path="/add-multi" element={<PrivateRoute element={AddMultiShip} />} />
           <Route path="/get-shipment-rate" element={<PrivateRoute element={ShipmentRate} />} />

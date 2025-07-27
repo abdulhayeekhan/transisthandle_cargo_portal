@@ -762,7 +762,7 @@ export default function Data() {
       refrenceNo,
     };
     const { data } = await axios.post(`${baseURL}/shipment/getAll`, body);
-    console.log("data response:", data);
+   
     setTotalPages(data?.totalPages);
     setShipInfo(data?.data);
     // GetShipmentData();

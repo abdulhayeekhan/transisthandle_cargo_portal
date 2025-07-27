@@ -12,22 +12,30 @@ import Tracking from "layouts/tracking";
 import AddShipment from "layouts/shipment/add";
 import Company from "layouts/company";
 import FlightList from "layouts/flights";
+import MoveTracking from "layouts/move";
 import ShipmentRate from "layouts/shipment/rate";
 import Users from "layouts/user";
 import PropTypes from "prop-types";
 import { useAuth } from "context/AuthContext";
-// @mui icons
 import Icon from "@mui/material/Icon";
 import { useContext, useEffect, useState } from "react";
-// const [roleId, setRoleId] = useState(null);
-// useEffect(() => {
-//   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-//   const roleId = userInfo?.userLavel;
-//   setRoleId(fetchedRoleId);
-// }, []);
-const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+
+// const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
+// const roleId = userInfo?.userLavel;
+const rawUserInfo = localStorage.getItem("userInfo");
+
+let userInfo = null;
+
+try {
+  if (rawUserInfo && rawUserInfo !== "undefined") {
+    userInfo = JSON.parse(rawUserInfo);
+  }
+} catch (error) {
+  console.error("Failed to parse userInfo from localStorage:", error);
+}
+
+// Now use userInfo safely
 const roleId = userInfo?.userLavel;
-console.log("roleId", roleId);
 // console.log("userLevel:", userLevel);
 const routes = [
   {
@@ -45,10 +53,22 @@ const routes = [
     name: "Tracking",
     key: "tracking",
     icon: <Icon fontSize="medium">track_changes</Icon>,
+
     route: "/tracking",
     component: Tracking,
     private: true,
     rolesAllowed: [1, 2],
+  },
+  {
+    type: "collapse",
+    name: "Move Tracking",
+    key: "move-tracking",
+    icon: <Icon fontSize="medium">swap_horiz</Icon>,
+
+    route: "/move-tracking",
+    component: MoveTracking,
+    private: true,
+    rolesAllowed: [1],
   },
   {
     type: "collapse",
