@@ -52,6 +52,16 @@ export const GetTrackingData = createAsyncThunk("gettrackingdata", async (body) 
   }
 });
 
+export const RemoveTrackingData = createAsyncThunk("removetrackingdata", async (id) => {
+  try {
+    const response = await axios.delete(`${baseURL}/localShipment/delete?id=${id}`);
+    toast.success("" + response.data?.message);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 export const GetSingleShipmentData = createAsyncThunk("getsingleshipmentdata", async (id) => {
   try {
     const { data } = await axios.get(`${baseURL}/localShipment/GetSingleShipmentInformation?ShipmentId=${id}`);
@@ -114,6 +124,20 @@ const TrackingSlice = createSlice({
         state.loading = false;
         state.status = false;
       })
+
+      .addCase(RemoveTrackingData.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(RemoveTrackingData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = { ...state.data, ...action.payload };
+        state.status = true;
+      })
+      .addCase(RemoveTrackingData.rejected, (state, action) => {
+        state.loading = false;
+        state.status = false;
+      })
+      
 
       .addCase(GetTrackingData.pending, (state) => {
         state.loading = true;

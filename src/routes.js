@@ -18,6 +18,7 @@ import Users from "layouts/user";
 import PropTypes from "prop-types";
 import { useAuth } from "context/AuthContext";
 import Icon from "@mui/material/Icon";
+import DeliveredOrders from "layouts/tracking/delivered";
 import { useContext, useEffect, useState } from "react";
 
 // const userInfo = JSON.parse(localStorage?.getItem("userInfo"));
@@ -58,6 +59,16 @@ const routes = [
     component: Tracking,
     private: true,
     rolesAllowed: [1, 2],
+  },
+  {
+    type: "collapse",
+    name: "Delivered Order",
+    key: "delivered-order",
+    icon: <Icon fontSize="medium">done</Icon>,
+    route: "/delivered-order",
+    component: DeliveredOrders,
+    private: true,
+    rolesAllowed: [1, 2, 3 ,4],
   },
   {
     type: "collapse",
